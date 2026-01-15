@@ -1,0 +1,16 @@
+FROM public.ecr.aws/lambda/python:3.11-arm64
+
+# Install dependencies (use only pre-built binaries)
+COPY requirements-indexer.txt ${LAMBDA_TASK_ROOT}/
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --only-binary :all: -r ${LAMBDA_TASK_ROOT}/requirements-indexer.txt
+
+# Copy indexer code and set permissions
+COPY app/indexer.py ${LAMBDA_TASK_ROOT}/
+RUN chmod 644 ${LAMBDA_TASK_ROOT}/indexer.py
+
+# Set environment
+ENV PYTHONPATH=${LAMBDA_TASK_ROOT}
+
+# Set the handler
+CMD ["indexer.handler"]

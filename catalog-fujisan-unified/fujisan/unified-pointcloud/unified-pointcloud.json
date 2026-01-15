@@ -1,0 +1,133 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json"
+  ],
+  "id": "unified-pointcloud",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          138.71568239130661,
+          35.36282776994987
+        ],
+        [
+          138.7465559797546,
+          35.36282776994987
+        ],
+        [
+          138.7465559797546,
+          35.383211111989574
+        ],
+        [
+          138.71568239130661,
+          35.383211111989574
+        ],
+        [
+          138.71568239130661,
+          35.36282776994987
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    138.71568239130661,
+    35.36282776994987,
+    138.7465559797546,
+    35.383211111989574
+  ],
+  "properties": {
+    "title": "Unified Point Cloud",
+    "description": "Merged COPC point cloud containing 209,251,895 points",
+    "pc:count": 209251895,
+    "pc:type": "lidar",
+    "pc:encoding": "application/vnd.laszip+copc",
+    "proj:epsg": 6676,
+    "proj:bbox": [
+      19600.0,
+      -70667.82,
+      2485.91,
+      22399.99,
+      -68400.01,
+      3756.64
+    ],
+    "source_file_count": 52,
+    "datetime": "2025-12-10T08:50:13.226968Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "\u5bcc\u58eb\u5c71\u70b9\u4e91\u6570\u636e\u96c6 (Unified)"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "Unified Point Cloud - fujisan"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "Unified Point Cloud - fujisan"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/data/fujisan-unified.copc.laz",
+      "type": "application/vnd.laszip+copc",
+      "title": "Unified COPC Point Cloud",
+      "description": "Cloud Optimized Point Cloud (COPC) - single unified file for on-demand access",
+      "file:size": 1284910461,
+      "roles": [
+        "data"
+      ]
+    },
+    "metadata": {
+      "href": "https://stac.uixai.org/data/fujisan-unified.metadata.json",
+      "type": "application/json",
+      "title": "Processing Metadata",
+      "description": "Merge processing metadata and statistics",
+      "roles": [
+        "metadata"
+      ]
+    },
+    "dem": {
+      "href": "https://stac.uixai.org/data/fujisan_dem.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Digital Elevation Model (Official)",
+      "description": "Official DEM from Yamanashi Prefecture 2024 LiDAR survey (0.5m resolution, EPSG:4326)",
+      "file:size": 40315559,
+      "raster:bands": [
+        {
+          "data_type": "float32",
+          "nodata": -9999,
+          "unit": "meter",
+          "description": "Elevation above sea level"
+        }
+      ],
+      "roles": [
+        "data",
+        "elevation"
+      ]
+    },
+    "dem_visual": {
+      "href": "https://stac.uixai.org/data/fujisan_dem_visual.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "DEM Visualization",
+      "description": "Hillshade and color-relief visualization of the DEM (RGBA)",
+      "file:size": 5404205,
+      "roles": [
+        "visual",
+        "overview"
+      ]
+    }
+  },
+  "collection": "fujisan"
+}

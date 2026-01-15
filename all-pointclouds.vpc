@@ -1,0 +1,26 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LE3771.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6238.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6239.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6248.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6249.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6258.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6259.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6268.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6269.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6330.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6331.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6338.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6339.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6340.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6341.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6348.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6349.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6350.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6351.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6360.copc.laz"}}},
+    {"type": "Feature", "properties": {}, "assets": {"data": {"href": "https://stac.uixai.org/data/08LF6370.copc.laz"}}}
+  ]
+}

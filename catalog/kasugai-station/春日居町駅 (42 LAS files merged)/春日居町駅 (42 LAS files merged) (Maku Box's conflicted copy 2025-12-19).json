@@ -1,0 +1,91 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "id": "春日居町駅 (42 LAS files merged)",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [138.6281188012905, 35.659221725902235],
+        [138.6590760059148, 35.659221725902235],
+        [138.6590760059148, 35.67540943322301],
+        [138.6281188012905, 35.67540943322301],
+        [138.6281188012905, 35.659221725902235]
+      ]
+    ]
+  },
+  "bbox": [
+    138.6281188012905,
+    35.659221725902235,
+    138.6590760059148,
+    35.67540943322301
+  ],
+  "properties": {
+    "title": "春日居町駅周辺 LiDAR 点群",
+    "description": "春日居町駅周辺の統合 COPC 点群データ（148,364,043 点、42 LASファイル統合）",
+    "pc:count": 148364043,
+    "pc:type": "lidar",
+    "pc:encoding": "application/vnd.laszip+copc",
+    "pc:density": 0,
+    "proj:epsg": 6676,
+    "proj:bbox": [11600, -37800, 266.62, 14399.99, -36000.01, 691.53],
+    "datetime": "2025-12-10T03:40:42.806881Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "STAC データカタログ"
+    },
+    {
+      "rel": "self",
+      "href": "https://stac.uixai.org/kasugai-station/春日居町駅 (42 LAS files merged)/春日居町駅 (42 LAS files merged).json",
+      "type": "application/geo+json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://stac.uixai.org/kasugai-station/春日居町駅 (42 LAS files merged)/春日居町駅 (42 LAS files merged)-en.json",
+      "type": "application/geo+json",
+      "hreflang": "en",
+      "title": "English version"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "春日居町周辺"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "春日居町周辺"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/data/kasugai_station.copc.laz",
+      "type": "application/vnd.laszip+copc",
+      "title": "統合COPC点群",
+      "description": "クラウド最適化点群 (COPC) フォーマット",
+      "file:size": 1318458997,
+      "roles": ["data"]
+    },
+    "metadata": {
+      "href": "https://stac.uixai.org/data/kasugai_station.metadata.json",
+      "type": "application/json",
+      "title": "処理メタデータ",
+      "description": "PDAL処理のメタデータと統計情報",
+      "roles": ["metadata"]
+    }
+  },
+  "collection": "kasugai-station"
+}

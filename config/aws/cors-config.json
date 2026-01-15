@@ -1,0 +1,19 @@
+{
+    "CORSRules": [
+        {
+            "ID": "AllowSTACBrowserAndCOPCAccess",
+            "AllowedOrigins": ["*"],
+            "AllowedMethods": ["GET", "HEAD"],
+            "AllowedHeaders": ["*"],
+            "ExposeHeaders": [
+                "Content-Length",
+                "Content-Range",
+                "Accept-Ranges",
+                "ETag",
+                "Content-Type",
+                "Last-Modified"
+            ],
+            "MaxAgeSeconds": 3600
+        }
+    ]
+}

@@ -1,0 +1,104 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json"
+  ],
+  "id": "dem",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [138.71568239130661, 35.36282776994987],
+        [138.7465559797546, 35.36282776994987],
+        [138.7465559797546, 35.383211111989574],
+        [138.71568239130661, 35.383211111989574],
+        [138.71568239130661, 35.36282776994987]
+      ]
+    ]
+  },
+  "bbox": [
+    138.71568239130661,
+    35.36282776994987,
+    138.7465559797546,
+    35.383211111989574
+  ],
+  "properties": {
+    "title": "Digital Elevation Model (Official)",
+    "description": "Official DEM from Yamanashi Prefecture 2024 LiDAR survey. 52 tiles merged into a single Cloud Optimized GeoTIFF (COG) with 0.5m resolution.",
+    "datetime": "2025-12-18T00:59:44Z",
+    "proj:epsg": 4326,
+    "proj:bbox": [
+      138.71568239130661,
+      35.36282776994987,
+      138.7465559797546,
+      35.383211111989574
+    ],
+    "raster:bands": [
+      {
+        "data_type": "float32",
+        "nodata": -9999,
+        "unit": "meter",
+        "description": "Elevation above sea level"
+      }
+    ],
+    "source_tile_count": 52,
+    "source_resolution": "0.5m",
+    "source_crs": "EPSG:6676"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "STAC Data Catalog"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "富士山周辺"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "富士山周辺"
+    }
+  ],
+  "assets": {
+    "dem": {
+      "href": "https://stac.uixai.org/data/fujisan_dem.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Digital Elevation Model (COG)",
+      "description": "Cloud Optimized GeoTIFF - Float32 elevation data in WGS84",
+      "file:size": 40315559,
+      "raster:bands": [
+        {
+          "data_type": "float32",
+          "nodata": -9999,
+          "unit": "meter",
+          "description": "Elevation above sea level"
+        }
+      ],
+      "roles": [
+        "data",
+        "elevation"
+      ]
+    },
+    "visual": {
+      "href": "https://stac.uixai.org/data/fujisan_dem_visual.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "DEM Visualization",
+      "description": "Hillshade and color-relief visualization (RGBA COG)",
+      "file:size": 5404205,
+      "roles": [
+        "visual",
+        "overview"
+      ]
+    }
+  },
+  "collection": "fujisan"
+}

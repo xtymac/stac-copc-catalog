@@ -1,0 +1,75 @@
+# TiTiler Dynamic Tile Server for COG
+# Run with: docker-compose up -d
+#
+# Access:
+#   - API docs: http://localhost:8080/docs
+#   - COG tiles: http://localhost:8080/cog/tiles/{z}/{x}/{y}.png?url=<COG_URL>
+#   - COG info: http://localhost:8080/cog/info?url=<COG_URL>
+#   - COG preview: http://localhost:8080/cog/preview.png?url=<COG_URL>
+
+version: '3.8'
+
+services:
+  titiler:
+    image: ghcr.io/developmentseed/titiler:latest
+    container_name: titiler
+    platform: linux/amd64
+    ports:
+      - "8080:8080"
+    environment:
+      # Server settings
+      - HOST=0.0.0.0
+      - PORT=8080
+      - WORKERS=4
+
+      # CORS settings (allow all origins for development)
+      - TITILER_API_CORS_ORIGINS=*
+
+      # Cache settings
+      - TITILER_API_CACHECONTROL=max-age=3600
+
+      # AWS settings (if using S3-hosted COGs)
+      # - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      # - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      # - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-ap-northeast-1}
+
+      # Enable requester pays for public S3 buckets
+      - AWS_REQUEST_PAYER=requester
+
+      # GDAL settings for performance
+      - GDAL_DISABLE_READDIR_ON_OPEN=EMPTY_DIR
+      - GDAL_HTTP_MERGE_CONSECUTIVE_RANGES=YES
+      - GDAL_HTTP_MULTIPLEX=YES
+      - GDAL_HTTP_VERSION=2
+      - VSI_CACHE=TRUE
+      - VSI_CACHE_SIZE=5000000
+
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Optional: mount local COG files
+    volumes:
+      - ../local/dem:/data/dem:ro
+      - ../catalog-dem:/data/catalog:ro
+
+networks:
+  default:
+    name: titiler-network

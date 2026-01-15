@@ -1,0 +1,27 @@
+{
+    "pipeline": [
+        {
+            "type": "readers.las",
+            "filename": "${INPUT_FILE}",
+            "nosrs": false
+        },
+        {
+            "type": "filters.info"
+        },
+        {
+            "type": "filters.stats",
+            "dimensions": "X,Y,Z,Intensity,ReturnNumber,NumberOfReturns,Classification,PointSourceId",
+            "enumerate": "Classification,ReturnNumber,NumberOfReturns"
+        },
+        {
+            "type": "filters.hexbin",
+            "edge_size": 10,
+            "threshold": 1
+        },
+        {
+            "type": "writers.copc",
+            "filename": "${OUTPUT_FILE}",
+            "forward": "all"
+        }
+    ]
+}

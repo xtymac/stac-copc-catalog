@@ -1,0 +1,91 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "id": "春日居町駅 (42 LAS files merged)",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [138.6281188012905, 35.659221725902235],
+        [138.6590760059148, 35.659221725902235],
+        [138.6590760059148, 35.67540943322301],
+        [138.6281188012905, 35.67540943322301],
+        [138.6281188012905, 35.659221725902235]
+      ]
+    ]
+  },
+  "bbox": [
+    138.6281188012905,
+    35.659221725902235,
+    138.6590760059148,
+    35.67540943322301
+  ],
+  "properties": {
+    "title": "Kasugai-cho Station Area LiDAR Point Cloud",
+    "description": "Unified COPC point cloud data from Kasugai-cho Station area (148,364,043 points, merged from 42 LAS files)",
+    "pc:count": 148364043,
+    "pc:type": "lidar",
+    "pc:encoding": "application/vnd.laszip+copc",
+    "pc:density": 0,
+    "proj:epsg": 6676,
+    "proj:bbox": [11600, -37800, 266.62, 14399.99, -36000.01, 691.53],
+    "datetime": "2025-12-10T03:40:42.806881Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog-en.json",
+      "type": "application/json",
+      "title": "STAC Data Catalog"
+    },
+    {
+      "rel": "self",
+      "href": "https://stac.uixai.org/kasugai-station/春日居町駅 (42 LAS files merged)/春日居町駅 (42 LAS files merged)-en.json",
+      "type": "application/geo+json",
+      "hreflang": "en"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://stac.uixai.org/kasugai-station/春日居町駅 (42 LAS files merged)/春日居町駅 (42 LAS files merged).json",
+      "type": "application/geo+json",
+      "hreflang": "ja",
+      "title": "Japanese version"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection-en.json",
+      "type": "application/json",
+      "title": "Kasugai-cho Station Area"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection-en.json",
+      "type": "application/json",
+      "title": "Kasugai-cho Station Area"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/data/kasugai_station.copc.laz",
+      "type": "application/vnd.laszip+copc",
+      "title": "Unified COPC Point Cloud",
+      "description": "Cloud Optimized Point Cloud (COPC) format",
+      "file:size": 1318458997,
+      "roles": ["data"]
+    },
+    "metadata": {
+      "href": "https://stac.uixai.org/data/kasugai_station.metadata.json",
+      "type": "application/json",
+      "title": "Processing Metadata",
+      "description": "PDAL processing metadata and statistics",
+      "roles": ["metadata"]
+    }
+  },
+  "collection": "kasugai-station"
+}

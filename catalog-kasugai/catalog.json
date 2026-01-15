@@ -1,0 +1,21 @@
+{
+  "type": "Catalog",
+  "id": "stac-copc-catalog",
+  "stac_version": "1.1.0",
+  "description": "Aerial LiDAR point cloud data around Kasugai Station, Yamanashi Prefecture, Japan",
+  "links": [
+    {
+      "rel": "root",
+      "href": "./catalog.json",
+      "type": "application/json",
+      "title": "\u6625\u65e5\u5c45\u753a\u99c5\u5468\u8fba (Kasugai Station Area)"
+    },
+    {
+      "rel": "child",
+      "href": "./kasugai-station/collection.json",
+      "type": "application/json",
+      "title": "Point Cloud Collection - kasugai-station"
+    }
+  ],
+  "title": "\u6625\u65e5\u5c45\u753a\u99c5\u5468\u8fba (Kasugai Station Area)"
+}

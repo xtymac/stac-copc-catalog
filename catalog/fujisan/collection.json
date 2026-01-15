@@ -1,0 +1,89 @@
+{
+  "type": "Collection",
+  "id": "fujisan",
+  "stac_version": "1.1.0",
+  "description": "山梨県富士山北麓エリアの高精度LiDAR点群データとDEM。52タイルを統合した約2.1億点のCOPC点群と、0.5m解像度のCloud Optimized GeoTIFF (COG) 形式のDEMを提供。",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "STAC Data Catalog"
+    },
+    {
+      "rel": "item",
+      "href": "./fujisan/fujisan.json",
+      "type": "application/geo+json",
+      "title": "Unified COPC Point Cloud"
+    },
+    {
+      "rel": "item",
+      "href": "./dem/dem.json",
+      "type": "application/geo+json",
+      "title": "Digital Elevation Model (COG)"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "STAC Data Catalog"
+    },
+    {
+      "rel": "preview",
+      "href": "https://stac.uixai.org/potree/index.html?files=https://stac.uixai.org/data/fujisan-unified.copc.laz",
+      "type": "text/html",
+      "title": "Potree 3D Viewer"
+    }
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "summaries": {
+    "pc:count": {
+      "minimum": 209251895,
+      "maximum": 209251895
+    },
+    "pc:type": [
+      "lidar"
+    ],
+    "pc:encoding": [
+      "application/vnd.laszip+copc"
+    ]
+  },
+  "title": "富士山周辺",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          138.71568239130661,
+          35.36282776994987,
+          138.7465559797546,
+          35.383211111989574
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2025-12-10T08:50:13.158238Z",
+          null
+        ]
+      ]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "Japanese national mapping and 3D city model project",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

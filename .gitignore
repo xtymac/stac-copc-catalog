@@ -1,0 +1,81 @@
+# STAC COPC Catalog - Git Ignore
+
+# Environment files
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+ENV/
+
+# Local working directories (large data files)
+local/
+
+# Third-party source code (too large for repo)
+potree-src/
+
+# Data directories (large files)
+Dataset/
+Recording/
+
+# All node_modules directories
+**/node_modules/
+
+# STAC Browser build source (keep dist for deployment reference)
+stac-browser/src/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AWS
+.aws/
+.cloudfront-distribution-id
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Large data files (should be in local/ but just in case)
+*.las
+*.laz
+*.copc.laz
+
+# Logs
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Claude settings (optional, can be removed if you want to share)
+.claude/

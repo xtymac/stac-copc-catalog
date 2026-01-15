@@ -1,0 +1,112 @@
+{
+  "type": "Collection",
+  "id": "fujisan-dem",
+  "stac_version": "1.1.0",
+  "description": "Digital Elevation Models derived from LiDAR point clouds",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Fujisan DEM Products STAC Catalog"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6238_dem/08LF6238_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6239_dem/08LF6239_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6248_dem/08LF6248_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6249_dem/08LF6249_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6258_dem/08LF6258_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6259_dem/08LF6259_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6330_dem/08LF6330_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Fujisan DEM Products STAC Catalog"
+    }
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "proj:epsg": 6676,
+  "summaries": {
+    "dem_type": [
+      "dem"
+    ],
+    "resolution": [
+      1.0,
+      2.0
+    ],
+    "raster:bands": [
+      {
+        "data_type": "float32",
+        "nodata": -9999.0,
+        "unit": "meter"
+      }
+    ],
+    "proj:epsg": [
+      6676
+    ]
+  },
+  "title": "Fujisan DEM Products",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          139.06470797497786,
+          35.54975227631707,
+          139.0780188185997,
+          35.55792088876131
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2025-12-15T11:38:00.162324Z",
+          null
+        ]
+      ]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "Japanese national mapping and 3D city model project - DEM products",
+      "roles": [
+        "producer",
+        "processor"
+      ],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

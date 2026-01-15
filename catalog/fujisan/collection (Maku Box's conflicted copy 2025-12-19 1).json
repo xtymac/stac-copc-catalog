@@ -1,0 +1,84 @@
+{
+  "type": "Collection",
+  "id": "fujisan",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "title": "富士山周辺",
+  "description": "山梨県富士山北麓エリアの高精度LiDAR点群データとDEM。52タイルを統合した約2.1億点のCOPC点群と、0.5m解像度のCloud Optimized GeoTIFF (COG) 形式のDEMを提供。",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "STAC データカタログ"
+    },
+    {
+      "rel": "self",
+      "href": "https://stac.uixai.org/fujisan/collection.json",
+      "type": "application/json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://stac.uixai.org/fujisan/collection-en.json",
+      "type": "application/json",
+      "hreflang": "en",
+      "title": "English version"
+    },
+    {
+      "rel": "item",
+      "href": "./fujisan/fujisan.json",
+      "type": "application/geo+json",
+      "title": "統合COPC点群"
+    },
+    {
+      "rel": "item",
+      "href": "./dem/dem.json",
+      "type": "application/geo+json",
+      "title": "数値標高モデル (COG)"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "STAC データカタログ"
+    },
+    {
+      "rel": "preview",
+      "href": "https://stac.uixai.org/potree/index.html?files=https://stac.uixai.org/data/fujisan-unified.copc.laz",
+      "type": "text/html",
+      "title": "Potree 3Dビューア"
+    }
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "summaries": {
+    "pc:count": {
+      "minimum": 209251895,
+      "maximum": 209251895
+    },
+    "pc:type": ["lidar"],
+    "pc:encoding": ["application/vnd.laszip+copc"]
+  },
+  "extent": {
+    "spatial": {
+      "bbox": [[138.71568239130661, 35.36282776994987, 138.7465559797546, 35.383211111989574]]
+    },
+    "temporal": {
+      "interval": [["2025-12-10T08:50:13.158238Z", null]]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "山梨県 / PLATEAU",
+      "description": "山梨県と国土交通省PLATEAUプロジェクトによる3D都市モデルデータ",
+      "roles": ["producer", "licensor"],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

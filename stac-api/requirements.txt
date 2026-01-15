@@ -1,0 +1,22 @@
+# STAC API Dependencies
+
+# Web framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# AWS Lambda support
+mangum>=0.17.0
+
+# Data processing (all have pre-built ARM64 wheels)
+numpy>=1.26.0,<2.0.0
+pyarrow>=14.0.0,<17.0.0
+pandas>=2.1.0,<2.3.0
+shapely>=2.0.0
+
+# For S3 index access (optional)
+boto3>=1.33.0
+
+# Coordinate transformation
+pyproj>=3.6.0

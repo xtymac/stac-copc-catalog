@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COG DEM Viewer</title>
+
+    <!-- Proj4js for coordinate transformations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.2/proj4.js"></script>
+
+    <!-- OpenLayers -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+
+    <!-- GeoTIFF.js for direct COG reading -->
+    <script src="https://cdn.jsdelivr.net/npm/geotiff@2.1.3/dist-browser/geotiff.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+        }
+
+        #header {
+            background: #16213e;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        #header h1 {
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        #controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        select, input[type="text"] {
+            background: #0f3460;
+            border: 1px solid #3a4a6b;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #ff6b6b;
+        }
+
+        button:disabled {
+            background: #444;
+            cursor: not-allowed;
+        }
+
+        #map-container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        #map {
+            flex: 1;
+            background: #0f0f23;
+        }
+
+        #sidebar {
+            width: 320px;
+            background: #16213e;
+            padding: 15px;
+            overflow-y: auto;
+            border-left: 1px solid #3a4a6b;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 0.9rem;
+            color: #e94560;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #3a4a6b;
+            font-size: 0.85rem;
+        }
+
+        .info-label {
+            color: #888;
+        }
+
+        .info-value {
+            color: #fff;
+            text-align: right;
+            max-width: 180px;
+            word-break: break-all;
+        }
+
+        #cog-url {
+            width: 300px;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            padding: 20px 40px;
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        #colorbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        #colorbar-gradient {
+            flex: 1;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .colorbar-label {
+            font-size: 0.75rem;
+            color: #aaa;
+            min-width: 50px;
+        }
+
+        .preset-urls {
+            margin-top: 10px;
+        }
+
+        .preset-urls select {
+            width: 100%;
+        }
+
+        #mouse-position {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>COG DEM Viewer</h1>
+        <div id="controls">
+            <div class="control-group">
+                <label for="cog-url">COG URL:</label>
+                <input type="text" id="cog-url" placeholder="https://example.com/dem.tif">
+            </div>
+            <div class="control-group">
+                <label for="colormap">Colormap:</label>
+                <select id="colormap">
+                    <option value="terrain">Terrain</option>
+                    <option value="viridis">Viridis</option>
+                    <option value="plasma">Plasma</option>
+                    <option value="grayscale">Grayscale</option>
+                    <option value="rainbow">Rainbow</option>
+                </select>
+            </div>
+            <button id="load-btn">Load COG</button>
+        </div>
+    </div>
+
+    <div id="map-container">
+        <div id="map">
+            <div id="loading" class="loading">Loading COG...</div>
+            <div id="mouse-position"></div>
+        </div>
+        <div id="sidebar">
+            <div class="sidebar-section">
+                <h3>Quick Load</h3>
+                <div class="preset-urls">
+                    <select id="preset-url">
+                        <option value="">-- Select a preset --</option>
+                        <option value="http://localhost:8000/local/dem/08LF6330_dem.tif">Local: 08LF6330_dem.tif</option>
+                        <option value="http://localhost:8000/local/dem/08LF6238_dem.tif">Local: 08LF6238_dem.tif</option>
+                        <option value="http://localhost:8000/local/dem/08LF6259_dem.tif">Local: 08LF6259_dem.tif</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>COG Info</h3>
+                <div id="cog-info">
+                    <div class="info-item">
+                        <span class="info-label">Status</span>
+                        <span class="info-value" id="info-status">Not loaded</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Width</span>
+                        <span class="info-value" id="info-width">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Height</span>
+                        <span class="info-value" id="info-height">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Bands</span>
+                        <span class="info-value" id="info-bands">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">CRS</span>
+                        <span class="info-value" id="info-crs">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Resolution</span>
+                        <span class="info-value" id="info-resolution">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Statistics</h3>
+                <div id="stats-info">
+                    <div class="info-item">
+                        <span class="info-label">Min</span>
+                        <span class="info-value" id="stats-min">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Max</span>
+                        <span class="info-value" id="stats-max">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Mean</span>
+                        <span class="info-value" id="stats-mean">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Color Scale</h3>
+                <div id="colorbar">
+                    <span class="colorbar-label" id="colorbar-min">0</span>
+                    <div id="colorbar-gradient"></div>
+                    <span class="colorbar-label" id="colorbar-max">100</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>TiTiler Mode</h3>
+                <div class="info-item">
+                    <label>
+                        <input type="checkbox" id="use-titiler"> Use TiTiler
+                    </label>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Server:</span>
+                    <input type="text" id="titiler-url" value="http://localhost:8080" style="width: 150px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Register Japanese coordinate systems (JGD2011 Plane Rectangular CS)
+        // Zone 8 (EPSG:6676) - Niigata, Nagano, Yamanashi, Shizuoka
+        proj4.defs('EPSG:6676', '+proj=tmerc +lat_0=36 +lon_0=138.5 +k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs');
+
+        // Register with OpenLayers
+        ol.proj.proj4.register(proj4);
+
+        // Colormaps
+        const colormaps = {
+            terrain: [
+                [0, [0, 97, 71]],
+                [0.15, [34, 139, 34]],
+                [0.3, [154, 205, 50]],
+                [0.45, [255, 255, 102]],
+                [0.6, [255, 193, 37]],
+                [0.75, [205, 133, 63]],
+                [0.9, [139, 90, 43]],
+                [1, [255, 250, 250]]
+            ],
+            viridis: [
+                [0, [68, 1, 84]],
+                [0.25, [59, 82, 139]],
+                [0.5, [33, 145, 140]],
+                [0.75, [94, 201, 98]],
+                [1, [253, 231, 37]]
+            ],
+            plasma: [
+                [0, [13, 8, 135]],
+                [0.25, [126, 3, 168]],
+                [0.5, [204, 71, 120]],
+                [0.75, [248, 149, 64]],
+                [1, [240, 249, 33]]
+            ],
+            grayscale: [
+                [0, [0, 0, 0]],
+                [1, [255, 255, 255]]
+            ],
+            rainbow: [
+                [0, [150, 0, 90]],
+                [0.125, [0, 0, 200]],
+                [0.25, [0, 25, 255]],
+                [0.375, [0, 152, 255]],
+                [0.5, [44, 255, 150]],
+                [0.625, [151, 255, 0]],
+                [0.75, [255, 234, 0]],
+                [0.875, [255, 111, 0]],
+                [1, [255, 0, 0]]
+            ]
+        };
+
+        function interpolateColor(colormap, t) {
+            t = Math.max(0, Math.min(1, t));
+            const stops = colormaps[colormap];
+
+            for (let i = 0; i < stops.length - 1; i++) {
+                if (t >= stops[i][0] && t <= stops[i + 1][0]) {
+                    const ratio = (t - stops[i][0]) / (stops[i + 1][0] - stops[i][0]);
+                    const c1 = stops[i][1];
+                    const c2 = stops[i + 1][1];
+                    return [
+                        Math.round(c1[0] + (c2[0] - c1[0]) * ratio),
+                        Math.round(c1[1] + (c2[1] - c1[1]) * ratio),
+                        Math.round(c1[2] + (c2[2] - c1[2]) * ratio)
+                    ];
+                }
+            }
+            return stops[stops.length - 1][1];
+        }
+
+        function updateColorbarGradient(colormap, min, max) {
+            const gradient = document.getElementById('colorbar-gradient');
+            const stops = colormaps[colormap];
+            const gradientStops = stops.map(([pos, color]) =>
+                `rgb(${color.join(',')}) ${pos * 100}%`
+            ).join(', ');
+            gradient.style.background = `linear-gradient(to right, ${gradientStops})`;
+
+            document.getElementById('colorbar-min').textContent = min.toFixed(1);
+            document.getElementById('colorbar-max').textContent = max.toFixed(1);
+        }
+
+        // Initialize map
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([138.7, 35.5]),
+                zoom: 12
+            })
+        });
+
+        // Mouse position
+        const mousePositionControl = new ol.control.MousePosition({
+            coordinateFormat: function(coordinate) {
+                const lonLat = ol.proj.toLonLat(coordinate);
+                return `Lon: ${lonLat[0].toFixed(5)}, Lat: ${lonLat[1].toFixed(5)}`;
+            },
+            target: document.getElementById('mouse-position')
+        });
+        map.addControl(mousePositionControl);
+
+        let currentLayer = null;
+        let cogData = null;
+
+        // Load COG
+        async function loadCOG(url) {
+            const loading = document.getElementById('loading');
+            loading.classList.add('show');
+            document.getElementById('info-status').textContent = 'Loading...';
+
+            try {
+                const useTitiler = document.getElementById('use-titiler').checked;
+
+                if (useTitiler) {
+                    await loadCOGWithTitiler(url);
+                } else {
+                    await loadCOGDirect(url);
+                }
+
+                document.getElementById('info-status').textContent = 'Loaded';
+            } catch (error) {
+                console.error('Error loading COG:', error);
+                document.getElementById('info-status').textContent = 'Error: ' + error.message;
+            } finally {
+                loading.classList.remove('show');
+            }
+        }
+
+        async function loadCOGDirect(url) {
+            const tiff = await GeoTIFF.fromUrl(url);
+            const image = await tiff.getImage();
+
+            // Get metadata
+            const width = image.getWidth();
+            const height = image.getHeight();
+            const bbox = image.getBoundingBox();
+            const resolution = image.getResolution();
+
+            document.getElementById('info-width').textContent = width + ' px';
+            document.getElementById('info-height').textContent = height + ' px';
+            document.getElementById('info-bands').textContent = image.getSamplesPerPixel();
+            document.getElementById('info-resolution').textContent = resolution[0].toFixed(2) + ' m';
+
+            // Get GeoKey for CRS
+            const geoKeys = image.getGeoKeys();
+            if (geoKeys && geoKeys.ProjectedCSTypeGeoKey) {
+                document.getElementById('info-crs').textContent = 'EPSG:' + geoKeys.ProjectedCSTypeGeoKey;
+            }
+
+            // Read raster data
+            const data = await image.readRasters();
+            const values = data[0];
+
+            // Calculate statistics (excluding nodata)
+            const nodata = -9999;
+            let min = Infinity, max = -Infinity, sum = 0, count = 0;
+            for (let i = 0; i < values.length; i++) {
+                const v = values[i];
+                if (v !== nodata && !isNaN(v)) {
+                    min = Math.min(min, v);
+                    max = Math.max(max, v);
+                    sum += v;
+                    count++;
+                }
+            }
+            const mean = count > 0 ? sum / count : 0;
+
+            document.getElementById('stats-min').textContent = min.toFixed(2) + ' m';
+            document.getElementById('stats-max').textContent = max.toFixed(2) + ' m';
+            document.getElementById('stats-mean').textContent = mean.toFixed(2) + ' m';
+
+            cogData = { min, max, values, width, height, nodata };
+
+            // Update colorbar
+            const colormap = document.getElementById('colormap').value;
+            updateColorbarGradient(colormap, min, max);
+
+            // Create canvas for rendering
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.createImageData(width, height);
+
+            // Render with colormap
+            renderToCanvas(imageData, values, width, height, min, max, nodata, colormap);
+            ctx.putImageData(imageData, 0, 0);
+
+            // Remove existing layer
+            if (currentLayer) {
+                map.removeLayer(currentLayer);
+            }
+
+            // Create new layer
+            const extent = ol.proj.transformExtent(
+                [bbox[0], bbox[1], bbox[2], bbox[3]],
+                'EPSG:' + (geoKeys?.ProjectedCSTypeGeoKey || 4326),
+                'EPSG:3857'
+            );
+
+            currentLayer = new ol.layer.Image({
+                source: new ol.source.ImageStatic({
+                    url: canvas.toDataURL(),
+                    imageExtent: extent
+                })
+            });
+
+            map.addLayer(currentLayer);
+            map.getView().fit(extent, { padding: [50, 50, 50, 50] });
+        }
+
+        async function loadCOGWithTitiler(cogUrl) {
+            const titilerUrl = document.getElementById('titiler-url').value;
+            const colormap = document.getElementById('colormap').value;
+
+            // Get COG info
+            const infoUrl = `${titilerUrl}/cog/info?url=${encodeURIComponent(cogUrl)}`;
+            const infoResponse = await fetch(infoUrl);
+            const info = await infoResponse.json();
+
+            document.getElementById('info-width').textContent = info.width + ' px';
+            document.getElementById('info-height').textContent = info.height + ' px';
+            document.getElementById('info-bands').textContent = info.count;
+            document.getElementById('info-crs').textContent = info.crs || '-';
+
+            // Get statistics
+            const statsUrl = `${titilerUrl}/cog/statistics?url=${encodeURIComponent(cogUrl)}`;
+            const statsResponse = await fetch(statsUrl);
+            const stats = await statsResponse.json();
+
+            if (stats.b1) {
+                document.getElementById('stats-min').textContent = stats.b1.min.toFixed(2);
+                document.getElementById('stats-max').textContent = stats.b1.max.toFixed(2);
+                document.getElementById('stats-mean').textContent = stats.b1.mean.toFixed(2);
+
+                updateColorbarGradient(colormap, stats.b1.min, stats.b1.max);
+            }
+
+            // Remove existing layer
+            if (currentLayer) {
+                map.removeLayer(currentLayer);
+            }
+
+            // Create TMS layer from TiTiler
+            const tileUrl = `${titilerUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(cogUrl)}&colormap_name=${colormap}`;
+
+            currentLayer = new ol.layer.Tile({
+                source: new ol.source.XYZ({
+                    url: tileUrl
+                })
+            });
+
+            map.addLayer(currentLayer);
+
+            // Fit to bounds
+            if (info.bounds) {
+                const extent = ol.proj.transformExtent(
+                    info.bounds,
+                    'EPSG:4326',
+                    'EPSG:3857'
+                );
+                map.getView().fit(extent, { padding: [50, 50, 50, 50] });
+            }
+        }
+
+        function renderToCanvas(imageData, values, width, height, min, max, nodata, colormap) {
+            const range = max - min;
+            for (let i = 0; i < values.length; i++) {
+                const v = values[i];
+                const idx = i * 4;
+
+                if (v === nodata || isNaN(v)) {
+                    imageData.data[idx] = 0;
+                    imageData.data[idx + 1] = 0;
+                    imageData.data[idx + 2] = 0;
+                    imageData.data[idx + 3] = 0;
+                } else {
+                    const t = (v - min) / range;
+                    const color = interpolateColor(colormap, t);
+                    imageData.data[idx] = color[0];
+                    imageData.data[idx + 1] = color[1];
+                    imageData.data[idx + 2] = color[2];
+                    imageData.data[idx + 3] = 255;
+                }
+            }
+        }
+
+        // Event listeners
+        document.getElementById('load-btn').addEventListener('click', () => {
+            const url = document.getElementById('cog-url').value.trim();
+            if (url) {
+                loadCOG(url);
+            }
+        });
+
+        document.getElementById('preset-url').addEventListener('change', (e) => {
+            const value = e.target.value;
+            if (value === 'local') {
+                document.getElementById('cog-url').value = 'file:///data/dem/08LF6330_dem.tif';
+            } else if (value) {
+                document.getElementById('cog-url').value = value;
+            }
+        });
+
+        document.getElementById('colormap').addEventListener('change', () => {
+            if (cogData && !document.getElementById('use-titiler').checked) {
+                // Re-render with new colormap
+                const url = document.getElementById('cog-url').value.trim();
+                if (url) loadCOG(url);
+            } else if (document.getElementById('use-titiler').checked) {
+                const url = document.getElementById('cog-url').value.trim();
+                if (url) loadCOG(url);
+            }
+        });
+
+        // Initialize colorbar
+        updateColorbarGradient('terrain', 0, 1000);
+    </script>
+</body>
+</html>

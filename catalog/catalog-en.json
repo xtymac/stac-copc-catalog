@@ -1,0 +1,43 @@
+{
+  "type": "Catalog",
+  "id": "stac-copc-catalog",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "title": "STAC Data Catalog",
+  "description": "A STAC catalog providing high-precision LiDAR point cloud data (COPC format) and DEM (COG format) from Yamanashi Prefecture, Japan.",
+  "links": [
+    {
+      "rel": "root",
+      "href": "./catalog-en.json",
+      "type": "application/json",
+      "title": "STAC Data Catalog"
+    },
+    {
+      "rel": "self",
+      "href": "https://stac.uixai.org/catalog-en.json",
+      "type": "application/json",
+      "hreflang": "en"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://stac.uixai.org/catalog.json",
+      "type": "application/json",
+      "hreflang": "ja",
+      "title": "Japanese version"
+    },
+    {
+      "rel": "child",
+      "href": "./kasugai-station/collection-en.json",
+      "type": "application/json",
+      "title": "Kasugai-cho Station Area"
+    },
+    {
+      "rel": "child",
+      "href": "./fujisan/collection-en.json",
+      "type": "application/json",
+      "title": "Mt. Fuji Area"
+    }
+  ]
+}

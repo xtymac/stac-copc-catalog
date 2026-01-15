@@ -1,0 +1,76 @@
+/**
+ * STAC Browser Configuration - API Mode
+ *
+ * This configuration enables STAC Browser to use the dynamic STAC API
+ * instead of static JSON files. Copy this to src/config.js after
+ * deploying the STAC API.
+ *
+ * Steps:
+ * 1. Deploy stac-api to AWS Lambda: cd stac-api && ./deploy.sh prod
+ * 2. Update catalogUrl below with your API Gateway URL
+ * 3. Copy this file to src/config.js
+ * 4. Rebuild: npm run build
+ */
+
+module.exports = {
+    // Point to STAC API endpoint (not static catalog.json)
+    // Replace with your actual API Gateway URL
+    catalogUrl: "https://{api-id}.execute-api.ap-northeast-1.amazonaws.com/prod/",
+
+    // Or if using CloudFront with /api path:
+    // catalogUrl: "https://stac.uixai.org/api/",
+
+    catalogTitle: "STAC COPC Catalog",
+
+    // Allow external access for cross-origin requests
+    allowExternalAccess: true,
+    allowedDomains: [],
+
+    // Localization
+    detectLocaleFromBrowser: true,
+    storeLocale: true,
+    locale: "ja",
+    fallbackLocale: "en",
+    supportedLocales: ["en", "ja"],
+
+    // API Priority: Prefer API over static catalog
+    // Options: null (auto), "static", "api"
+    apiCatalogPriority: null,  // null = auto-detect from catalogUrl
+
+    // Map and tile settings
+    useTileLayerAsFallback: true,
+    displayGeoTiffByDefault: false,
+    buildTileUrlTemplate: ({href, asset}) =>
+        "https://tiles.rdnt.io/tiles/{z}/{x}/{y}@2x?url=" +
+        encodeURIComponent(asset.href.startsWith("/vsi") ? asset.href : href),
+
+    // Proxy (if needed for CORS issues)
+    stacProxyUrl: null,
+
+    // URL routing
+    pathPrefix: "/browser/",
+    historyMode: "hash",
+
+    // Display settings
+    cardViewMode: "cards",
+    cardViewSort: "asc",
+    showKeywordsInItemCards: false,
+    showKeywordsInCatalogCards: false,
+    showThumbnailsAsAssets: false,
+
+    // Performance
+    geoTiffResolution: 128,
+    itemsPerPage: 12,  // Matches API default limit
+    defaultThumbnailSize: null,
+    maxPreviewsOnMap: 50,
+
+    // Legacy
+    redirectLegacyUrls: false,
+
+    // Advanced
+    crossOriginMedia: null,
+    requestHeaders: {},
+    requestQueryParameters: {},
+    preprocessSTAC: null,
+    authConfig: null
+};

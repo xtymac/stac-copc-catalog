@@ -1,0 +1,76 @@
+{
+  "type": "Collection",
+  "id": "unified-pointcloud",
+  "stac_version": "1.1.0",
+  "description": "Single merged LiDAR point cloud in COPC format for cloud-native access",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Unified COPC Catalog"
+    },
+    {
+      "rel": "item",
+      "href": "./unified-pointcloud/unified-pointcloud.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Unified COPC Catalog"
+    }
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "summaries": {
+    "pc:count": {
+      "minimum": 96664269,
+      "maximum": 96664269
+    },
+    "pc:type": [
+      "lidar"
+    ],
+    "pc:encoding": [
+      "application/vnd.laszip+copc"
+    ]
+  },
+  "title": "Unified Point Cloud - unified-pointcloud",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          51200.0,
+          -50100.0,
+          53199.99,
+          -48900.001
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2025-12-10T07:35:06.696264Z",
+          null
+        ]
+      ]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "Japanese national mapping and 3D city model project",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  STAC API - Dynamic Index from S3
+  Reads index from S3 with TTL-based cache refresh
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+  CatalogBucket:
+    Type: String
+    Default: stac-uixai-catalog
+    Description: S3 bucket containing the STAC catalog and index files
+  IndexPrefix:
+    Type: String
+    Default: index
+    Description: S3 prefix for index files
+  IndexCacheTTL:
+    Type: Number
+    Default: 60
+    Description: Index cache TTL in seconds (how often to check S3 for updates)
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 1024
+
+Resources:
+  # Main STAC API Lambda Function (Container Image)
+  StacApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub stac-api-${Stage}
+      PackageType: Image
+      Architectures:
+        - arm64
+      MemorySize: 1024
+      Timeout: 30
+      Environment:
+        Variables:
+          USE_S3_INDEX: "true"
+          INDEX_BUCKET: !Ref CatalogBucket
+          INDEX_PREFIX: !Ref IndexPrefix
+          INDEX_CACHE_TTL: !Ref IndexCacheTTL
+          STAC_API_TITLE: "STAC COPC API"
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref StacHttpApi
+            Path: /{proxy+}
+            Method: ANY
+        Root:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref StacHttpApi
+            Path: /
+            Method: ANY
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref CatalogBucket
+    Metadata:
+      DockerTag: !Sub ${Stage}-latest
+      DockerContext: ./
+      Dockerfile: Dockerfile
+
+  # HTTP API Gateway
+  StacHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Stage
+      CorsConfiguration:
+        AllowOrigins:
+          - "https://stac.uixai.org"
+          - "http://localhost:8080"
+          - "http://localhost:3000"
+          - "*"
+        AllowMethods:
+          - GET
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+          - X-Amz-Date
+          - X-Api-Key
+        MaxAge: 300
+
+  # CloudWatch Log Group for API
+  StacApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/stac-api-${Stage}
+      RetentionInDays: 14
+
+  # STAC Indexer Lambda Function (Container Image)
+  StacIndexerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub stac-indexer-${Stage}
+      PackageType: Image
+      Architectures:
+        - arm64
+      MemorySize: 512
+      Timeout: 120
+      Environment:
+        Variables:
+          CATALOG_BUCKET: !Ref CatalogBucket
+          INDEX_PREFIX: !Ref IndexPrefix
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref CatalogBucket
+    Metadata:
+      DockerTag: !Sub indexer-${Stage}-latest
+      DockerContext: ./
+      Dockerfile: Dockerfile.indexer
+
+  # CloudWatch Log Group for Indexer
+  StacIndexerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/stac-indexer-${Stage}
+      RetentionInDays: 14
+
+  # Permission for S3 to invoke Indexer Lambda
+  S3InvokeIndexerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref StacIndexerFunction
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+      SourceArn: !Sub arn:aws:s3:::${CatalogBucket}
+
+  # Keep-warm scheduled event (also refreshes index)
+  KeepWarmRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub stac-api-keepwarm-${Stage}
+      Description: Keep Lambda warm and refresh index periodically
+      ScheduleExpression: rate(5 minutes)
+      State: ENABLED
+      Targets:
+        - Id: KeepWarmTarget
+          Arn: !GetAtt StacApiFunction.Arn
+          Input: '{"httpMethod": "GET", "path": "/health"}'
+
+  KeepWarmPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref StacApiFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt KeepWarmRule.Arn
+
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${StacHttpApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+  FunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt StacApiFunction.Arn
+  IndexerFunctionArn:
+    Description: Indexer Lambda Function ARN
+    Value: !GetAtt StacIndexerFunction.Arn
+  ApiId:
+    Description: HTTP API ID (for CloudFront integration)
+    Value: !Ref StacHttpApi
+  S3EventSetupCommand:
+    Description: Command to setup S3 event notifications (run once after deploy)
+    Value: !Sub |
+      # Configure S3 event notifications for auto-indexing:
+      aws s3api put-bucket-notification-configuration \
+        --bucket ${CatalogBucket} \
+        --notification-configuration '{
+          "LambdaFunctionConfigurations": [{
+            "LambdaFunctionArn": "${StacIndexerFunction.Arn}",
+            "Events": ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"],
+            "Filter": {
+              "Key": {
+                "FilterRules": [
+                  {"Name": "suffix", "Value": ".json"}
+                ]
+              }
+            }
+          }]
+        }'

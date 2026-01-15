@@ -1,0 +1,83 @@
+{
+    "Rules": [
+        {
+            "ID": "TransitionDataToStandardIA",
+            "Status": "Enabled",
+            "Filter": {
+                "Prefix": "data/"
+            },
+            "Transitions": [
+                {
+                    "Days": 90,
+                    "StorageClass": "STANDARD_IA"
+                }
+            ]
+        },
+        {
+            "ID": "TransitionRawToStandardIA",
+            "Status": "Enabled",
+            "Filter": {
+                "Prefix": "raw/"
+            },
+            "Transitions": [
+                {
+                    "Days": 30,
+                    "StorageClass": "STANDARD_IA"
+                },
+                {
+                    "Days": 180,
+                    "StorageClass": "GLACIER"
+                }
+            ]
+        },
+        {
+            "ID": "CleanupTmpFiles",
+            "Status": "Enabled",
+            "Filter": {
+                "Prefix": "tmp/"
+            },
+            "Expiration": {
+                "Days": 7
+            }
+        },
+        {
+            "ID": "CleanupStagingFiles",
+            "Status": "Enabled",
+            "Filter": {
+                "Prefix": "staging/"
+            },
+            "Expiration": {
+                "Days": 30
+            }
+        },
+        {
+            "ID": "ArchiveAndExpireLogs",
+            "Status": "Enabled",
+            "Filter": {
+                "Prefix": "logs/"
+            },
+            "Transitions": [
+                {
+                    "Days": 30,
+                    "StorageClass": "GLACIER"
+                }
+            ],
+            "Expiration": {
+                "Days": 365
+            }
+        },
+        {
+            "ID": "CleanupOldVersions",
+            "Status": "Enabled",
+            "Filter": {
+                "Prefix": ""
+            },
+            "NoncurrentVersionExpiration": {
+                "NoncurrentDays": 30
+            },
+            "AbortIncompleteMultipartUpload": {
+                "DaysAfterInitiation": 7
+            }
+        }
+    ]
+}

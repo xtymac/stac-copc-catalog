@@ -1,0 +1,175 @@
+{
+  "type": "Collection",
+  "id": "pointcloud-jgd2011",
+  "stac_version": "1.1.0",
+  "description": "LiDAR point cloud data in COPC format",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "STAC COPC Catalog"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6238/08LF6238.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6239/08LF6239.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6248/08LF6248.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6249/08LF6249.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6258/08LF6258.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6259/08LF6259.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6268/08LF6268.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6269/08LF6269.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6330/08LF6330.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6331/08LF6331.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6332/08LF6332.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6340/08LF6340.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6341/08LF6341.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6342/08LF6342.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6350/08LF6350.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6351/08LF6351.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6352/08LF6352.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6360/08LF6360.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6361/08LF6361.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6362/08LF6362.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "STAC COPC Catalog"
+    }
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "proj:epsg": 6676,
+  "summaries": {
+    "pc:count": {
+      "minimum": 3157706,
+      "maximum": 7094840
+    },
+    "pc:type": [
+      "lidar"
+    ],
+    "pc:encoding": [
+      "application/vnd.laszip+copc"
+    ],
+    "proj:epsg": [
+      6676
+    ]
+  },
+  "title": "Point Cloud Collection - pointcloud-jgd2011",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          139.0646987483503,
+          35.54701354613348,
+          139.08683498636069,
+          35.55789280298778
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2025-12-10T03:39:38.131409Z",
+          null
+        ]
+      ]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "Japanese national mapping and 3D city model project",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

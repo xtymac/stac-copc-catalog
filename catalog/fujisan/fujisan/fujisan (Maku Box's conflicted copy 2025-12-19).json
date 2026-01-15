@@ -1,0 +1,97 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "id": "fujisan",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [138.71568239130661, 35.36282776994987],
+        [138.7465559797546, 35.36282776994987],
+        [138.7465559797546, 35.383211111989574],
+        [138.71568239130661, 35.383211111989574],
+        [138.71568239130661, 35.36282776994987]
+      ]
+    ]
+  },
+  "bbox": [
+    138.71568239130661,
+    35.36282776994987,
+    138.7465559797546,
+    35.383211111989574
+  ],
+  "properties": {
+    "title": "富士山周辺 LiDAR 点群",
+    "description": "富士山周辺の統合 COPC 点群データ（209,251,895 点）",
+    "pc:count": 209251895,
+    "pc:type": "lidar",
+    "pc:encoding": "application/vnd.laszip+copc",
+    "proj:epsg": 6676,
+    "proj:bbox": [19600.0, -70667.82, 2485.91, 22399.99, -68400.01, 3756.64],
+    "source_file_count": 52,
+    "datetime": "2025-12-10T08:50:13.226968Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "STAC データカタログ"
+    },
+    {
+      "rel": "self",
+      "href": "https://stac.uixai.org/fujisan/fujisan/fujisan.json",
+      "type": "application/geo+json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://stac.uixai.org/fujisan/fujisan/fujisan-en.json",
+      "type": "application/geo+json",
+      "hreflang": "en",
+      "title": "English version"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "富士山周辺"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "富士山周辺"
+    },
+    {
+      "rel": "related",
+      "href": "https://stac.uixai.org/potree/selector.html",
+      "type": "text/html",
+      "title": "🗺️ エリア選択"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/data/fujisan-unified.copc.laz",
+      "type": "application/vnd.laszip+copc",
+      "title": "統合COPC点群",
+      "description": "クラウド最適化点群 (COPC) - オンデマンドアクセス用の統合ファイル",
+      "file:size": 1284910461,
+      "roles": ["data"]
+    },
+    "metadata": {
+      "href": "https://stac.uixai.org/data/fujisan-unified.metadata.json",
+      "type": "application/json",
+      "title": "処理メタデータ",
+      "description": "マージ処理のメタデータと統計情報",
+      "roles": ["metadata"]
+    }
+  },
+  "collection": "fujisan"
+}

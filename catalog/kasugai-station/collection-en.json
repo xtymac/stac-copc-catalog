@@ -1,0 +1,74 @@
+{
+  "type": "Collection",
+  "id": "kasugai-station",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "title": "Kasugai-cho Station Area",
+  "description": "High-precision LiDAR point cloud data from the Kasugai-cho Station area in Fuefuki City, Yamanashi Prefecture. 42 LAS files merged into approximately 150 million points in COPC format.",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog-en.json",
+      "type": "application/json",
+      "title": "STAC Data Catalog"
+    },
+    {
+      "rel": "self",
+      "href": "https://stac.uixai.org/kasugai-station/collection-en.json",
+      "type": "application/json",
+      "hreflang": "en"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://stac.uixai.org/kasugai-station/collection.json",
+      "type": "application/json",
+      "hreflang": "ja",
+      "title": "Japanese version"
+    },
+    {
+      "rel": "item",
+      "href": "./春日居町駅 (42 LAS files merged)/春日居町駅 (42 LAS files merged)-en.json",
+      "type": "application/geo+json",
+      "title": "Unified COPC Point Cloud"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog-en.json",
+      "type": "application/json",
+      "title": "STAC Data Catalog"
+    }
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "proj:epsg": 6676,
+  "summaries": {
+    "pc:count": {
+      "minimum": 148364043,
+      "maximum": 148364043
+    },
+    "pc:type": ["lidar"],
+    "pc:encoding": ["application/vnd.laszip+copc"],
+    "proj:epsg": [6676]
+  },
+  "extent": {
+    "spatial": {
+      "bbox": [[138.6281188012905, 35.659221725902235, 138.6590760059148, 35.67540943322301]]
+    },
+    "temporal": {
+      "interval": [["2025-12-10T03:40:42.806003Z", null]]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "Yamanashi Prefecture / PLATEAU",
+      "description": "3D city model data from Yamanashi Prefecture and MLIT PLATEAU project",
+      "roles": ["producer", "licensor"],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

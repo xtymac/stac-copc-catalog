@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAC COPC Point Cloud Viewer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+        }
+        #header {
+            height: 50px;
+            background: #0d0d1a;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            border-bottom: 1px solid #333;
+        }
+        #header h1 { font-size: 16px; font-weight: 500; }
+        #header a { color: #4ecdc4; text-decoration: none; font-size: 14px; }
+        #header a:hover { text-decoration: underline; }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 50px);
+        }
+
+        #sidebar {
+            width: 220px;
+            background: #0d0d1a;
+            padding: 15px;
+            overflow-y: auto;
+            border-right: 1px solid #333;
+        }
+
+        #sidebar h2 {
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #4ecdc4;
+        }
+
+        #sidebar p {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .file-btn {
+            display: block;
+            width: 100%;
+            padding: 8px 10px;
+            margin: 4px 0;
+            background: #1a1a2e;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .file-btn:hover {
+            background: #2a2a4e;
+            border-color: #4ecdc4;
+        }
+        .file-btn.active {
+            border-color: #4ecdc4;
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        #viewer-container {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+
+        #viewer-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #444;
+        }
+
+        #placeholder p { margin-top: 15px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>STAC COPC Point Cloud Viewer</h1>
+        <a href="/browser/">STAC Browser</a>
+        <a href="/catalog.json">Catalog JSON</a>
+    </div>
+
+    <div class="container">
+        <div id="sidebar">
+            <h2>Point Cloud Files (22)</h2>
+            <p>Click a file to view it in the 3D viewer. Uses copc.io for rendering.</p>
+            <div id="file-list"></div>
+        </div>
+
+        <div id="viewer-container">
+            <div id="placeholder">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <p>Select a file from the left panel</p>
+            </div>
+            <iframe id="viewer-frame" style="display:none;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const FILES = [
+            { id: "kasugai_station", name: "春日居町駅 (42 files)", points: "148M" },
+            { id: "08LE3771", points: "3.4M" },
+            { id: "08LF6238", points: "3.4M" },
+            { id: "08LF6239", points: "3.4M" },
+            { id: "08LF6248", points: "3.4M" },
+            { id: "08LF6249", points: "3.4M" },
+            { id: "08LF6258", points: "3.4M" },
+            { id: "08LF6259", points: "3.4M" },
+            { id: "08LF6268", points: "3.4M" },
+            { id: "08LF6269", points: "3.4M" },
+            { id: "08LF6330", points: "3.4M" },
+            { id: "08LF6331", points: "3.4M" },
+            { id: "08LF6338", points: "3.4M" },
+            { id: "08LF6339", points: "3.4M" },
+            { id: "08LF6340", points: "3.4M" },
+            { id: "08LF6341", points: "3.4M" },
+            { id: "08LF6348", points: "3.4M" },
+            { id: "08LF6349", points: "3.4M" },
+            { id: "08LF6350", points: "3.4M" },
+            { id: "08LF6351", points: "3.4M" },
+            { id: "08LF6360", points: "3.4M" },
+            { id: "08LF6370", points: "3.4M" }
+        ];
+
+        const BASE_URL = "https://stac.uixai.org/data/";
+
+        function createFileList() {
+            const container = document.getElementById('file-list');
+            FILES.forEach(file => {
+                const btn = document.createElement('button');
+                btn.className = 'file-btn';
+                btn.id = `btn-${file.id}`;
+                btn.innerHTML = `${file.name || file.id} <span style="color:#555;float:right;">${file.points}</span>`;
+                btn.onclick = () => loadFile(file.id);
+                container.appendChild(btn);
+            });
+        }
+
+        function loadFileByUrl(url) {
+            // Use local Potree viewer (in dist folder) for better RGB color support
+            const viewerUrl = `/potree/dist/index.html?files=${encodeURIComponent(url)}`;
+            document.getElementById('placeholder').style.display = 'none';
+            const frame = document.getElementById('viewer-frame');
+            frame.style.display = 'block';
+            frame.src = viewerUrl;
+        }
+
+        function loadFile(fileId) {
+            const url = `${BASE_URL}${fileId}.copc.laz`;
+            loadFileByUrl(url);
+
+            document.querySelectorAll('.file-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn-${fileId}`);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        // Check URL parameters for direct file loading
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const filesParam = params.get('files');
+            const copcParam = params.get('copc');
+
+            if (filesParam) {
+                loadFileByUrl(filesParam);
+                return true;
+            } else if (copcParam) {
+                loadFileByUrl(copcParam);
+                return true;
+            }
+            return false;
+        }
+
+        createFileList();
+
+        // Load from URL params if present, otherwise load default
+        if (!checkUrlParams()) {
+            setTimeout(() => loadFile('08LF6238'), 300);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+{
+    "Comment": "STAC COPC Catalog Distribution - ${CUSTOM_DOMAIN}",
+    "Enabled": true,
+    "HttpVersion": "http2and3",
+    "IsIPV6Enabled": true,
+    "PriceClass": "PriceClass_100",
+    "DefaultRootObject": "browser/index.html",
+    "Origins": {
+        "Quantity": 1,
+        "Items": [
+            {
+                "Id": "S3-stac-copc-origin",
+                "DomainName": "${BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com",
+                "OriginPath": "",
+                "S3OriginConfig": {
+                    "OriginAccessIdentity": ""
+                },
+                "OriginAccessControlId": "${OAC_ID}",
+                "ConnectionAttempts": 3,
+                "ConnectionTimeout": 10,
+                "OriginShield": {
+                    "Enabled": false
+                }
+            }
+        ]
+    },
+    "DefaultCacheBehavior": {
+        "TargetOriginId": "S3-stac-copc-origin",
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "AllowedMethods": {
+            "Quantity": 2,
+            "Items": ["GET", "HEAD"],
+            "CachedMethods": {
+                "Quantity": 2,
+                "Items": ["GET", "HEAD"]
+            }
+        },
+        "Compress": true,
+        "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+        "OriginRequestPolicyId": "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf",
+        "ResponseHeadersPolicyId": "5cc3b908-e619-4b99-88e5-2cf7f45965bd",
+        "SmoothStreaming": false
+    },
+    "CacheBehaviors": {
+        "Quantity": 3,
+        "Items": [
+            {
+                "PathPattern": "*.json",
+                "TargetOriginId": "S3-stac-copc-origin",
+                "ViewerProtocolPolicy": "redirect-to-https",
+                "AllowedMethods": {
+                    "Quantity": 2,
+                    "Items": ["GET", "HEAD"],
+                    "CachedMethods": {
+                        "Quantity": 2,
+                        "Items": ["GET", "HEAD"]
+                    }
+                },
+                "Compress": true,
+                "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+                "DefaultTTL": 300,
+                "MinTTL": 0,
+                "MaxTTL": 3600,
+                "SmoothStreaming": false
+            },
+            {
+                "PathPattern": "*.copc.laz",
+                "TargetOriginId": "S3-stac-copc-origin",
+                "ViewerProtocolPolicy": "redirect-to-https",
+                "AllowedMethods": {
+                    "Quantity": 2,
+                    "Items": ["GET", "HEAD"],
+                    "CachedMethods": {
+                        "Quantity": 2,
+                        "Items": ["GET", "HEAD"]
+                    }
+                },
+                "Compress": false,
+                "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+                "DefaultTTL": 604800,
+                "MinTTL": 0,
+                "MaxTTL": 31536000,
+                "SmoothStreaming": false
+            },
+            {
+                "PathPattern": "potree/*",
+                "TargetOriginId": "S3-stac-copc-origin",
+                "ViewerProtocolPolicy": "redirect-to-https",
+                "AllowedMethods": {
+                    "Quantity": 2,
+                    "Items": ["GET", "HEAD"],
+                    "CachedMethods": {
+                        "Quantity": 2,
+                        "Items": ["GET", "HEAD"]
+                    }
+                },
+                "Compress": true,
+                "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+                "DefaultTTL": 86400,
+                "MinTTL": 0,
+                "MaxTTL": 604800,
+                "SmoothStreaming": false
+            }
+        ]
+    },
+    "CustomErrorResponses": {
+        "Quantity": 2,
+        "Items": [
+            {
+                "ErrorCode": 403,
+                "ResponsePagePath": "/browser/index.html",
+                "ResponseCode": "200",
+                "ErrorCachingMinTTL": 300
+            },
+            {
+                "ErrorCode": 404,
+                "ResponsePagePath": "/browser/index.html",
+                "ResponseCode": "200",
+                "ErrorCachingMinTTL": 300
+            }
+        ]
+    },
+    "Aliases": {
+        "Quantity": 1,
+        "Items": ["${CUSTOM_DOMAIN}"]
+    },
+    "ViewerCertificate": {
+        "ACMCertificateArn": "${ACM_CERTIFICATE_ARN}",
+        "SSLSupportMethod": "sni-only",
+        "MinimumProtocolVersion": "TLSv1.2_2021",
+        "CloudFrontDefaultCertificate": false
+    },
+    "Logging": {
+        "Enabled": false,
+        "IncludeCookies": false,
+        "Bucket": "",
+        "Prefix": ""
+    }
+}

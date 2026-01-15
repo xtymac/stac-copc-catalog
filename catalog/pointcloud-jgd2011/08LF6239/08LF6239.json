@@ -1,0 +1,103 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json"
+  ],
+  "id": "08LF6239",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          139.06916759575927,
+          35.55518885485562
+        ],
+        [
+          139.07359870381313,
+          35.55518885485562
+        ],
+        [
+          139.07359870381313,
+          35.55787189336306
+        ],
+        [
+          139.06916759575927,
+          35.55787189336306
+        ],
+        [
+          139.06916759575927,
+          35.55518885485562
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    139.06916759575927,
+    35.55518885485562,
+    139.07359870381313,
+    35.55787189336306
+  ],
+  "properties": {
+    "title": "08LF6239",
+    "description": "COPC point cloud from 08LF6239.las",
+    "pc:count": 3440196,
+    "pc:type": "lidar",
+    "pc:encoding": "application/vnd.laszip+copc",
+    "pc:density": 0,
+    "proj:epsg": 6676,
+    "proj:bbox": [
+      51600,
+      -49200,
+      540.91,
+      51999.99,
+      -48900.01,
+      726.07
+    ],
+    "datetime": "2025-12-10T03:39:38.133194Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "STAC COPC Catalog"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "Point Cloud Collection - pointcloud-jgd2011"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "Point Cloud Collection - pointcloud-jgd2011"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/data/08LF6239.copc.laz",
+      "type": "application/vnd.laszip+copc",
+      "title": "COPC Point Cloud Data",
+      "description": "Cloud Optimized Point Cloud (COPC) format",
+      "file:size": 31921112,
+      "roles": [
+        "data"
+      ]
+    },
+    "metadata": {
+      "href": "https://stac.uixai.org/data/08LF6239.metadata.json",
+      "type": "application/json",
+      "title": "Processing Metadata",
+      "description": "PDAL processing metadata and statistics",
+      "roles": [
+        "metadata"
+      ]
+    }
+  },
+  "collection": "pointcloud-jgd2011"
+}

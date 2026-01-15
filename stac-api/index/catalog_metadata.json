@@ -1,0 +1,10 @@
+{
+  "catalog_id": "stac-copc-catalog",
+  "catalog_title": "COPC 統合カタログ",
+  "catalog_description": "クラウドネイティブな点群（COPC）統合カタログ。日本国内のLiDAR点群データを提供。",
+  "stac_version": "1.1.0",
+  "indexed_at": "2025-12-21T10:54:11.009284Z",
+  "items_count": 8,
+  "collections_count": 4,
+  "index_version": "1.0.0"
+}

@@ -1,0 +1,176 @@
+{
+  "type": "Collection",
+  "id": "dem-products",
+  "stac_version": "1.1.0",
+  "description": "Digital Elevation Models derived from LiDAR point clouds",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "DEM Products STAC Catalog"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6238_dem/08LF6238_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6239_dem/08LF6239_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6248_dem/08LF6248_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6249_dem/08LF6249_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6258_dem/08LF6258_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6259_dem/08LF6259_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6268_dem/08LF6268_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6269_dem/08LF6269_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6330_dem/08LF6330_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6331_dem/08LF6331_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6332_dem/08LF6332_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6340_dem/08LF6340_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6341_dem/08LF6341_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6342_dem/08LF6342_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6350_dem/08LF6350_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6351_dem/08LF6351_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6352_dem/08LF6352_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6360_dem/08LF6360_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6361_dem/08LF6361_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./08LF6362_dem/08LF6362_dem.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "DEM Products STAC Catalog"
+    }
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "proj:epsg": 6676,
+  "summaries": {
+    "dem_type": [
+      "dem"
+    ],
+    "resolution": [
+      1.0
+    ],
+    "raster:bands": [
+      {
+        "data_type": "float32",
+        "nodata": -9999.0,
+        "unit": "meter"
+      }
+    ],
+    "proj:epsg": [
+      6676
+    ]
+  },
+  "title": "DEM Products",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          137.9408950858009,
+          36.46014224996921,
+          137.95441931559773,
+          36.47823784321404
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2025-12-15T11:59:49.443985Z",
+          null
+        ]
+      ]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "Japanese national mapping and 3D city model project - DEM products",
+      "roles": [
+        "producer",
+        "processor"
+      ],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

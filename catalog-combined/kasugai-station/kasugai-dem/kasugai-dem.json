@@ -1,0 +1,119 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "id": "kasugai-dem",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [138.6281188, 35.6591872],
+        [138.6590742, 35.6591872],
+        [138.6590742, 35.6754464],
+        [138.6281188, 35.6754464],
+        [138.6281188, 35.6591872]
+      ]
+    ]
+  },
+  "bbox": [138.6281188, 35.6591872, 138.6590742, 35.6754464],
+  "properties": {
+    "title": "春日居町駅周辺 DEM (公式 山梨2024)",
+    "description": "山梨県LiDAR 2024年データによる公式デジタル標高モデル。0.5m解像度、42枚のグリッドタイルを統合。",
+    "datetime": "2025-12-21T10:19:00+00:00",
+    "proj:epsg": 4326,
+    "raster:bands": [
+      {
+        "data_type": "float32",
+        "nodata": 1.70141e+38,
+        "unit": "meter",
+        "description": "海抜標高",
+        "statistics": {
+          "minimum": 266.66,
+          "maximum": 666.52,
+          "mean": 337.87,
+          "stddev": 89.99
+        }
+      }
+    ],
+    "source_file_count": 42,
+    "resolution_meters": 0.5
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "self",
+      "href": "./kasugai-dem.json",
+      "type": "application/geo+json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "./kasugai-dem-en.json",
+      "type": "application/geo+json",
+      "hreflang": "en",
+      "title": "English version"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/data/kasugai_dem_2024_official.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "DEM COG (WGS84)",
+      "description": "WGS84座標系のCloud Optimized GeoTIFF",
+      "file:size": 54562706,
+      "proj:epsg": 4326,
+      "raster:bands": [
+        {
+          "data_type": "float32",
+          "nodata": 1.70141e+38,
+          "unit": "meter"
+        }
+      ],
+      "roles": ["data"]
+    },
+    "data-jgd": {
+      "href": "https://stac.uixai.org/data/kasugai_dem_2024_official_jgd.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "DEM COG (JGD2011 第8系)",
+      "description": "日本測地系2011 第8系のCloud Optimized GeoTIFF",
+      "file:size": 35266567,
+      "proj:epsg": 6676,
+      "raster:bands": [
+        {
+          "data_type": "float32",
+          "nodata": 1.70141e+38,
+          "unit": "meter"
+        }
+      ],
+      "roles": ["data"]
+    },
+    "visual": {
+      "href": "https://stac.uixai.org/data/kasugai_dem_visual.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "カラーレリーフ可視化",
+      "description": "標高に応じた色分け可視化画像",
+      "file:size": 4833562,
+      "roles": ["visual", "overview"]
+    }
+  },
+  "collection": "kasugai-station"
+}

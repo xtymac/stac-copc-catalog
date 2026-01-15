@@ -1,0 +1,21 @@
+{
+  "type": "Catalog",
+  "id": "stac-copc-catalog",
+  "stac_version": "1.1.0",
+  "description": "Aerial LiDAR point cloud data from Yamanashi Prefecture, Japan",
+  "links": [
+    {
+      "rel": "root",
+      "href": "./catalog.json",
+      "type": "application/json",
+      "title": "Point Cloud Collection - JGD2011"
+    },
+    {
+      "rel": "child",
+      "href": "./pointcloud-jgd2011/collection.json",
+      "type": "application/json",
+      "title": "Point Cloud Collection - pointcloud-jgd2011"
+    }
+  ],
+  "title": "Point Cloud Collection - JGD2011"
+}

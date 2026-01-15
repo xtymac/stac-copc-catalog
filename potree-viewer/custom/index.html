@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="STAC COPC Point Cloud Viewer - Self-hosted Potree">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>STAC COPC Point Cloud Viewer - Potree</title>
+
+    <!-- Potree CSS (CDN paths for production) -->
+    <link rel="stylesheet" type="text/css" href="https://stac.uixai.org/viewer/potree.css">
+    <link rel="stylesheet" type="text/css" href="https://stac.uixai.org/viewer/libs/jquery-ui/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="https://stac.uixai.org/viewer/libs/openlayers3/ol.css">
+    <link rel="stylesheet" type="text/css" href="https://stac.uixai.org/viewer/libs/spectrum/spectrum.css">
+    <link rel="stylesheet" type="text/css" href="https://stac.uixai.org/viewer/libs/jstree/themes/mixed/style.css">
+
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; }
+        .potree_container { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        #loading-overlay.hidden { display: none; }
+
+        .loading-spinner {
+            width: 50px; height: 50px;
+            border: 3px solid #333;
+            border-top-color: #4ecdc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #loading-status {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        #file-list {
+            margin-top: 15px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 13px;
+        }
+        #file-list div {
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin: 2px 0;
+        }
+        .file-loading { color: #ffd93d; background: rgba(255, 217, 61, 0.1); }
+        .file-loaded { color: #6bcb77; background: rgba(107, 203, 119, 0.1); }
+        .file-error { color: #ff6b6b; background: rgba(255, 107, 107, 0.1); }
+
+        #nav-links {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            display: flex;
+            gap: 10px;
+        }
+        #nav-links a {
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+        }
+        #nav-links a:hover {
+            background: rgba(78, 205, 196, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Links -->
+    <div id="nav-links">
+        <a href="/browser/">STAC Browser</a>
+        <a href="/catalog.json">Catalog JSON</a>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div id="loading-status">Initializing Potree...</div>
+        <div id="file-list"></div>
+    </div>
+
+    <!-- Potree Libraries (CDN paths for production) -->
+    <script src="https://stac.uixai.org/viewer/libs/jquery/jquery-3.1.1.min.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/spectrum/spectrum.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/jquery-ui/jquery-ui.min.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/other/BinaryHeap.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/tween/tween.min.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/d3/d3.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/proj4/proj4.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/openlayers3/ol.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/i18next/i18next.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/jstree/jstree.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/copc/index.js"></script>
+    <script src="https://stac.uixai.org/viewer/potree.js"></script>
+    <script src="https://stac.uixai.org/viewer/libs/plasio/js/laslaz.js"></script>
+
+    <!-- EPSG Definitions for JGD2011 -->
+    <script>
+        // JGD2011 / Japan Plane Rectangular CS IX (EPSG:6677)
+        proj4.defs("EPSG:6677", "+proj=tmerc +lat_0=36 +lon_0=139.833333333333 +k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs");
+
+        // Register with OpenLayers if available
+        if (typeof ol !== 'undefined' && ol.proj && ol.proj.proj4) {
+            ol.proj.proj4.register(proj4);
+        }
+    </script>
+
+    <!-- Potree Container -->
+    <div class="potree_container">
+        <div id="potree_render_area" style="background-image: url('https://stac.uixai.org/viewer/resources/images/background.jpg');"></div>
+        <div id="potree_sidebar_container"></div>
+    </div>
+
+    <script type="module">
+        import * as THREE from "https://stac.uixai.org/viewer/libs/three.js/build/three.module.js";
+
+        // Configuration
+        const CONFIG = {
+            baseDataUrl: 'https://stac.uixai.org/data/',
+            stacCatalogUrl: 'https://stac.uixai.org/catalog.json',
+            stacCollectionUrl: 'https://stac.uixai.org/pointcloud-jgd2011/collection.json',
+            pointBudget: 3000000,
+            defaultPointSize: 1,
+            edlEnabled: true,
+            fov: 60
+        };
+
+        // Parse URL parameters
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                files: params.get('files') ? params.get('files').split(',') : [],
+                stacItem: params.get('item'),
+                stacCollection: params.get('collection'),  // e.g., "pointcloud-jgd2011"
+                loadAll: params.get('all') === 'true',     // Load all from collection
+                pointSize: parseFloat(params.get('pointSize')) || CONFIG.defaultPointSize,
+                pointBudget: parseInt(params.get('budget')) || CONFIG.pointBudget,
+                color: params.get('c') || 'rgba',
+                // Bbox parameters - native coordinate system (default, higher precision)
+                bbox: params.get('bbox') ? params.get('bbox').split(',').map(Number) : null,
+                bboxCrs: params.get('bbox_crs') ? parseInt(params.get('bbox_crs')) : null  // Optional, defaults to data's native CRS
+            };
+        }
+
+        // Initialize Potree Viewer
+        async function initViewer() {
+            const params = getUrlParams();
+
+            updateLoadingStatus('Creating viewer...');
+
+            // Create viewer
+            window.viewer = new Potree.Viewer(document.getElementById("potree_render_area"));
+
+            viewer.setEDLEnabled(CONFIG.edlEnabled);
+            viewer.setFOV(CONFIG.fov);
+            viewer.setPointBudget(params.pointBudget);
+            viewer.loadSettingsFromURL();
+            viewer.setDescription("STAC COPC Point Cloud Viewer");
+
+            // Load GUI
+            viewer.loadGUI(() => {
+                viewer.setLanguage('en');
+                $("#menu_appearance").next().show();
+                $("#menu_tools").next().show();
+            });
+
+            updateLoadingStatus('Loading point clouds...');
+
+            // Determine which files to load
+            let filesToLoad = [];
+
+            if (params.files.length > 0) {
+                // Load specific files from URL parameter
+                filesToLoad = params.files.map(f => {
+                    const url = f.startsWith('http') ? f : CONFIG.baseDataUrl + f;
+                    const name = f.split('/').pop().replace('.copc.laz', '');
+                    return { url, name };
+                });
+            } else if (params.stacCollection) {
+                // Load all items from STAC collection
+                filesToLoad = await loadFromStacCollection(params.stacCollection);
+            } else if (params.stacItem) {
+                // Load from STAC item
+                filesToLoad = await loadFromStacItem(params.stacItem, 'pointcloud-jgd2011');
+            } else {
+                // Demo: load default file
+                filesToLoad = [{
+                    url: CONFIG.baseDataUrl + '08LF6238.copc.laz',
+                    name: '08LF6238'
+                }];
+            }
+
+            if (filesToLoad.length === 0) {
+                updateLoadingStatus('No point cloud files found');
+                showError('Use ?files=file1.copc.laz,file2.copc.laz or ?item=ITEM_ID');
+                return;
+            }
+
+            // Load all point clouds
+            await loadPointClouds(filesToLoad, params);
+        }
+
+        // Load all items from STAC collection
+        async function loadFromStacCollection(collectionId) {
+            try {
+                updateLoadingStatus(`Fetching STAC collection: ${collectionId}...`);
+                const collectionUrl = `https://stac.uixai.org/${collectionId}/collection.json`;
+
+                const response = await fetch(collectionUrl);
+                if (!response.ok) throw new Error(`Collection not found: ${collectionId}`);
+
+                const collection = await response.json();
+
+                // Find all item links in the collection
+                const itemLinks = collection.links.filter(l => l.rel === 'item');
+                const files = [];
+
+                updateLoadingStatus(`Found ${itemLinks.length} items, fetching...`);
+
+                // Fetch each item to get the data asset URL
+                const baseUrl = `https://stac.uixai.org/${collectionId}/`;
+                for (const link of itemLinks) {
+                    try {
+                        // Convert relative href to absolute URL
+                        const itemUrl = link.href.startsWith('http') ? link.href : baseUrl + link.href.replace('./', '');
+                        const itemResponse = await fetch(itemUrl);
+                        if (itemResponse.ok) {
+                            const item = await itemResponse.json();
+                            if (item.assets?.data?.href) {
+                                files.push({
+                                    url: item.assets.data.href,
+                                    name: item.id
+                                });
+                            }
+                        }
+                    } catch (e) {
+                        console.warn(`Failed to fetch item: ${link.href}`, e);
+                    }
+                }
+
+                return files;
+            } catch (e) {
+                console.error('Failed to load STAC collection:', e);
+                return [];
+            }
+        }
+
+        // Load from specific STAC item
+        async function loadFromStacItem(itemId, collectionId) {
+            try {
+                updateLoadingStatus(`Fetching STAC item: ${itemId}...`);
+                const itemUrl = `https://stac.uixai.org/${collectionId}/${itemId}/${itemId}.json`;
+
+                const response = await fetch(itemUrl);
+                if (!response.ok) throw new Error(`Item not found: ${itemId}`);
+
+                const item = await response.json();
+
+                if (item.assets?.data?.href) {
+                    return [{
+                        url: item.assets.data.href,
+                        name: item.id
+                    }];
+                }
+                return [];
+            } catch (e) {
+                console.error('Failed to load STAC item:', e);
+                return [];
+            }
+        }
+
+        // Load point clouds with coordinate centering
+        async function loadPointClouds(files, params) {
+            const fileList = document.getElementById('file-list');
+            const pointClouds = [];
+            let globalCenter = null;
+
+            for (const file of files) {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'file-loading';
+                fileDiv.textContent = `Loading: ${file.name}...`;
+                fileList.appendChild(fileDiv);
+
+                try {
+                    const pc = await new Promise((resolve, reject) => {
+                        Potree.loadPointCloud(file.url, file.name, (e) => {
+                            if (e.pointcloud) {
+                                resolve(e.pointcloud);
+                            } else {
+                                reject(new Error('Failed to load point cloud'));
+                            }
+                        });
+                    });
+
+                    // Configure material
+                    pc.material.size = params.pointSize;
+                    pc.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
+                    pc.material.activeAttributeName = params.color;
+
+                    // Get center of first point cloud for coordinate centering
+                    if (!globalCenter) {
+                        globalCenter = pc.boundingBox.getCenter(new THREE.Vector3());
+                    }
+
+                    // Center point cloud to avoid floating point precision issues
+                    pc.position.sub(globalCenter);
+
+                    // Add to scene
+                    viewer.scene.addPointCloud(pc);
+                    pointClouds.push(pc);
+
+                    fileDiv.className = 'file-loaded';
+                    fileDiv.textContent = `Loaded: ${file.name}`;
+
+                } catch (error) {
+                    fileDiv.className = 'file-error';
+                    fileDiv.textContent = `Error: ${file.name}`;
+                    console.error(`Failed to load ${file.name}:`, error);
+                }
+            }
+
+            // Fit view to all loaded point clouds
+            if (pointClouds.length > 0) {
+                updateLoadingStatus('Fitting view...');
+
+                // Store global center for measurement tools
+                window.coordinateOffset = globalCenter;
+
+                // Apply bbox clipping if specified
+                if (params.bbox && params.bbox.length === 4) {
+                    applyBboxClip(params.bbox, globalCenter, pointClouds);
+                }
+
+                // Small delay to ensure everything is loaded
+                setTimeout(() => {
+                    if (params.bbox && params.bbox.length === 4) {
+                        // Fit to bbox area
+                        fitToBbox(params.bbox, globalCenter);
+                    } else {
+                        viewer.fitToScreen(0.5);
+                    }
+                    hideLoading();
+                }, 500);
+            } else {
+                showError('No point clouds could be loaded');
+            }
+        }
+
+        // Apply bbox clipping to point clouds
+        function applyBboxClip(bbox, globalCenter, pointClouds) {
+            const [minX, minY, maxX, maxY] = bbox;
+
+            // Calculate bbox center and dimensions (offset by globalCenter)
+            const centerX = (minX + maxX) / 2 - globalCenter.x;
+            const centerY = (minY + maxY) / 2 - globalCenter.y;
+            const width = maxX - minX;
+            const height = maxY - minY;
+
+            // Get Z range from point clouds
+            let minZ = Infinity, maxZ = -Infinity;
+            pointClouds.forEach(pc => {
+                const box = pc.boundingBox;
+                minZ = Math.min(minZ, box.min.z);
+                maxZ = Math.max(maxZ, box.max.z);
+            });
+            const depth = (maxZ - minZ) + 100;  // Add some margin
+            const centerZ = (minZ + maxZ) / 2 - globalCenter.z;
+
+            // Create clip volume
+            const boxVolume = new Potree.BoxVolume();
+            boxVolume.name = "Bbox Clip";
+            boxVolume.position.set(centerX, centerY, centerZ);
+            boxVolume.scale.set(width, height, depth);
+            boxVolume.clip = true;
+            boxVolume.visible = false;  // Hide the clip box visual
+
+            viewer.scene.addVolume(boxVolume);
+            viewer.setClipTask(Potree.ClipTask.SHOW_INSIDE);
+
+            console.log(`Applied bbox clip: [${minX}, ${minY}, ${maxX}, ${maxY}]`);
+        }
+
+        // Fit view to bbox area
+        function fitToBbox(bbox, globalCenter) {
+            const [minX, minY, maxX, maxY] = bbox;
+
+            // Calculate view target (offset by globalCenter)
+            const centerX = (minX + maxX) / 2 - globalCenter.x;
+            const centerY = (minY + maxY) / 2 - globalCenter.y;
+            const width = maxX - minX;
+            const height = maxY - minY;
+
+            // Calculate camera distance based on bbox size
+            const maxDim = Math.max(width, height);
+            const distance = maxDim * 2;
+
+            // Set camera position and target
+            const target = new THREE.Vector3(centerX, centerY, 0);
+            const position = new THREE.Vector3(centerX, centerY - distance * 0.5, distance);
+
+            viewer.scene.view.position.copy(position);
+            viewer.scene.view.lookAt(target);
+        }
+
+        // UI Helpers
+        function updateLoadingStatus(message) {
+            document.getElementById('loading-status').textContent = message;
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        function showError(message) {
+            const status = document.getElementById('loading-status');
+            status.style.color = '#ff6b6b';
+            status.textContent = message;
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', initViewer);
+    </script>
+</body>
+</html>

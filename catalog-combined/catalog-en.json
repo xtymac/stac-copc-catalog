@@ -1,0 +1,53 @@
+{
+  "type": "Catalog",
+  "id": "stac-copc-catalog",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "languages": [{"code": "ja", "name": "日本語"}, {"code": "en", "name": "English"}],
+  "title": "COPC Unified Catalog",
+  "description": "Unified Cloud Optimized Point Cloud (COPC) catalog for on-demand access. Contains LiDAR point cloud collections from Japan.",
+  "links": [
+    {
+      "rel": "self",
+      "href": "./catalog-en.json",
+      "type": "application/json",
+      "hreflang": "en"
+    },
+    {
+      "rel": "alternate",
+      "href": "./catalog.json",
+      "type": "application/json",
+      "hreflang": "ja",
+      "title": "日本語版"
+    },
+    {
+      "rel": "root",
+      "href": "./catalog-en.json",
+      "type": "application/json",
+      "title": "COPC Unified Catalog",
+      "hreflang": "en"
+    },
+    {
+      "rel": "related",
+      "href": "https://stac.uixai.org/potree/selector.html",
+      "type": "text/html",
+      "title": "Area Selector Tool"
+    },
+    {
+      "rel": "child",
+      "href": "./fujisan/collection-en.json",
+      "type": "application/json",
+      "title": "Mt. Fuji Area",
+      "hreflang": "en"
+    },
+    {
+      "rel": "child",
+      "href": "./kasugai-station/collection-en.json",
+      "type": "application/json",
+      "title": "Kasugai-cho Station Area",
+      "hreflang": "en"
+    }
+  ]
+}

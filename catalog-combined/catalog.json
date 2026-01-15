@@ -1,0 +1,53 @@
+{
+  "type": "Catalog",
+  "id": "stac-copc-catalog",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "languages": [{"code": "ja", "name": "日本語"}, {"code": "en", "name": "English"}],
+  "title": "COPC 統合カタログ",
+  "description": "クラウドネイティブな点群（COPC）統合カタログ。日本国内のLiDAR点群データを提供。",
+  "links": [
+    {
+      "rel": "self",
+      "href": "./catalog.json",
+      "type": "application/json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "./catalog-en.json",
+      "type": "application/json",
+      "hreflang": "en",
+      "title": "English version"
+    },
+    {
+      "rel": "root",
+      "href": "./catalog.json",
+      "type": "application/json",
+      "title": "COPC 統合カタログ",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "related",
+      "href": "https://stac.uixai.org/potree/selector.html",
+      "type": "text/html",
+      "title": "点群データ範囲選択ツール"
+    },
+    {
+      "rel": "child",
+      "href": "./fujisan/collection.json",
+      "type": "application/json",
+      "title": "富士山周辺",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "child",
+      "href": "./kasugai-station/collection.json",
+      "type": "application/json",
+      "title": "春日居町駅周辺",
+      "hreflang": "ja"
+    }
+  ]
+}

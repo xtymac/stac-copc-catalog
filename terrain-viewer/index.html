@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Terrain Viewer - DEM Visualization</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow: hidden;
+            background: #1a1a2e;
+        }
+        #container { width: 100vw; height: 100vh; }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .controls h1 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .control-group {
+            margin: 10px 0;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+        }
+
+        .control-group .value {
+            font-size: 11px;
+            color: #999;
+            text-align: right;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 5px 5px 5px 0;
+        }
+
+        .btn:hover { background: #2980b9; }
+        .btn.secondary { background: #95a5a6; }
+        .btn.secondary:hover { background: #7f8c8d; }
+
+        .info {
+            font-size: 11px;
+            color: #666;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            z-index: 2000;
+        }
+
+        .loading.hidden { display: none; }
+
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #333;
+            border-top-color: #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #color-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+
+        .legend-gradient {
+            width: 20px;
+            height: 150px;
+            background: linear-gradient(to bottom, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff);
+            border-radius: 3px;
+            margin-bottom: 5px;
+        }
+
+        .legend-labels {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 150px;
+            margin-left: 25px;
+            margin-top: -155px;
+        }
+
+        .header-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: #0d0d1a;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            z-index: 1001;
+        }
+
+        .header-bar a {
+            color: #4ecdc4;
+            text-decoration: none;
+            font-size: 13px;
+            margin-right: 20px;
+        }
+
+        .header-bar a:hover { text-decoration: underline; }
+
+        .controls { top: 50px; }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <a href="/browser/">STAC Browser</a>
+        <a href="/potree/selector.html">Area Selector</a>
+        <a href="#" id="pointcloud-link">Point Cloud Viewer</a>
+    </div>
+
+    <script>
+        // Set dynamic Point Cloud Viewer link based on DEM parameter
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const demUrl = params.get('dem') || params.get('url') || '';
+            const link = document.getElementById('pointcloud-link');
+
+            // Map DEM files to corresponding COPC point cloud files
+            const demToCopc = {
+                'fujisan': 'fujisan-unified.copc.laz',
+                'kasugai': 'kasugai-station.copc.laz'
+            };
+
+            // Determine which point cloud to link to
+            let copcFile = null;
+            if (demUrl.includes('fujisan')) {
+                copcFile = demToCopc['fujisan'];
+            } else if (demUrl.includes('kasugai')) {
+                copcFile = demToCopc['kasugai'];
+            }
+
+            if (copcFile) {
+                const copcUrl = 'https://stac.uixai.org/data/' + copcFile;
+                link.href = '/potree/index.html?files=' + encodeURIComponent(copcUrl);
+            } else {
+                // Default to potree selector if no matching COPC
+                link.href = '/potree/selector.html';
+            }
+        })();
+    </script>
+
+    <div id="container"></div>
+
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div>Loading terrain data...</div>
+    </div>
+
+    <div class="controls">
+        <h1>3D Terrain Viewer</h1>
+
+        <div class="control-group">
+            <label>Vertical Exaggeration</label>
+            <input type="range" id="exaggeration" min="0.5" max="10" step="0.5" value="1">
+            <div class="value" id="exaggeration-value">1x</div>
+        </div>
+
+        <div class="control-group">
+            <label>Color Mode</label>
+            <select id="colorMode" class="btn" style="width: 100%;">
+                <option value="elevation">Elevation Colors</option>
+                <option value="grayscale">Grayscale</option>
+                <option value="hillshade">Hillshade</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Light Direction (degrees)</label>
+            <input type="range" id="lightAngle" min="0" max="360" step="5" value="315">
+            <div class="value" id="lightAngle-value">315°</div>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <button class="btn" id="resetCamera">Reset View</button>
+            <button class="btn secondary" id="toggleWireframe">Wireframe</button>
+        </div>
+
+        <div class="info" id="terrain-info">
+            <strong>Terrain Info</strong><br>
+            <span id="info-text">Loading...</span>
+        </div>
+    </div>
+
+    <div id="color-legend">
+        <div class="legend-gradient"></div>
+        <div class="legend-labels">
+            <span id="legend-max">High</span>
+            <span id="legend-mid"></span>
+            <span id="legend-min">Low</span>
+        </div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        // Import all dependencies as ES modules
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import * as GeoTIFF from 'https://cdn.jsdelivr.net/npm/geotiff@2.0.7/+esm';
+
+        // Get DEM URL from query parameter
+        const params = new URLSearchParams(window.location.search);
+        const demUrl = params.get('dem') || params.get('url') || 'https://stac.uixai.org/data/kasugai_station_dem.cog.tif';
+
+        let scene, camera, renderer, controls, terrainMesh;
+        let elevationData = null;
+        let minElevation = 0, maxElevation = 100;
+        let wireframeMode = false;
+
+        // Initialize Three.js scene
+        function initScene() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a2e);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
+            camera.position.set(0, 300, 400);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            // Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2.1;
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(100, 200, 100);
+            scene.add(directionalLight);
+
+            // Grid helper
+            const gridHelper = new THREE.GridHelper(1000, 50, 0x444444, 0x333333);
+            scene.add(gridHelper);
+
+            // Handle resize
+            window.addEventListener('resize', onWindowResize);
+
+            // Animation loop
+            animate();
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Load DEM from COG
+        async function loadDEM(url) {
+            document.getElementById('loading').classList.remove('hidden');
+
+            try {
+                console.log('Loading DEM from:', url);
+                console.log('GeoTIFF module:', GeoTIFF);
+
+                // ES module export - use fromUrl function
+                const tiff = await GeoTIFF.fromUrl(url, { allowFullFile: true });
+                const image = await tiff.getImage();
+
+                const width = image.getWidth();
+                const height = image.getHeight();
+                const bbox = image.getBoundingBox();
+
+                console.log(`DEM size: ${width}x${height}`);
+                console.log('BBox:', bbox);
+
+                // Read raster data
+                const rasters = await image.readRasters();
+                elevationData = rasters[0];
+
+                // Find min/max elevation (ignoring nodata) - use loop to avoid stack overflow
+                const nodata = -9999;
+                minElevation = Infinity;
+                maxElevation = -Infinity;
+                for (let i = 0; i < elevationData.length; i++) {
+                    const val = elevationData[i];
+                    if (val > nodata) {
+                        if (val < minElevation) minElevation = val;
+                        if (val > maxElevation) maxElevation = val;
+                    }
+                }
+
+                console.log(`Elevation range: ${minElevation.toFixed(1)} - ${maxElevation.toFixed(1)} m`);
+
+                // Update legend
+                document.getElementById('legend-max').textContent = maxElevation.toFixed(0) + 'm';
+                document.getElementById('legend-min').textContent = minElevation.toFixed(0) + 'm';
+                document.getElementById('legend-mid').textContent = ((minElevation + maxElevation) / 2).toFixed(0) + 'm';
+
+                // Update info
+                document.getElementById('info-text').innerHTML =
+                    `Size: ${width} x ${height}<br>` +
+                    `Elevation: ${minElevation.toFixed(1)} - ${maxElevation.toFixed(1)} m<br>` +
+                    `Range: ${(maxElevation - minElevation).toFixed(1)} m`;
+
+                // Subsample if too large
+                let sampleWidth = width;
+                let sampleHeight = height;
+                let sampleData = elevationData;
+
+                const maxDim = 512;
+                if (width > maxDim || height > maxDim) {
+                    const scaleX = Math.ceil(width / maxDim);
+                    const scaleY = Math.ceil(height / maxDim);
+                    const scale = Math.max(scaleX, scaleY);
+
+                    sampleWidth = Math.floor(width / scale);
+                    sampleHeight = Math.floor(height / scale);
+                    sampleData = new Float32Array(sampleWidth * sampleHeight);
+
+                    for (let y = 0; y < sampleHeight; y++) {
+                        for (let x = 0; x < sampleWidth; x++) {
+                            const srcX = x * scale;
+                            const srcY = y * scale;
+                            sampleData[y * sampleWidth + x] = elevationData[srcY * width + srcX];
+                        }
+                    }
+
+                    console.log(`Subsampled to ${sampleWidth}x${sampleHeight}`);
+                }
+
+                // Calculate real-world extent for proper scaling
+                // bbox = [minX, minY, maxX, maxY]
+                const extentX = bbox[2] - bbox[0];
+                const extentY = bbox[3] - bbox[1];
+                const elevationRange = maxElevation - minElevation;
+
+                // Calculate vertical scale factor
+                // If coordinates are in degrees, convert to approximate meters
+                let realExtent;
+                if (Math.abs(bbox[0]) <= 180 && Math.abs(bbox[2]) <= 180) {
+                    // Likely in degrees - convert to meters (rough approximation)
+                    const latMid = (bbox[1] + bbox[3]) / 2;
+                    const metersPerDegLon = 111320 * Math.cos(latMid * Math.PI / 180);
+                    const metersPerDegLat = 110540;
+                    realExtent = Math.max(extentX * metersPerDegLon, extentY * metersPerDegLat);
+                } else {
+                    // Already in meters
+                    realExtent = Math.max(extentX, extentY);
+                }
+
+                console.log(`Real extent: ${realExtent.toFixed(0)}m, Elevation range: ${elevationRange.toFixed(0)}m`);
+                console.log(`Vertical/Horizontal ratio: ${(elevationRange / realExtent * 100).toFixed(2)}%`);
+
+                // Create terrain geometry with proper scale
+                createTerrain(sampleData, sampleWidth, sampleHeight, elevationRange, realExtent);
+
+                document.getElementById('loading').classList.add('hidden');
+
+            } catch (error) {
+                console.error('Failed to load DEM:', error);
+                document.getElementById('loading').innerHTML =
+                    `<div style="color: #e74c3c;">Failed to load DEM<br><small>${error.message}</small></div>`;
+            }
+        }
+
+        // Store real-world scale for updates
+        let storedElevationRange = 0;
+        let storedRealExtent = 0;
+        let storedData = null;
+        let storedWidth = 0;
+        let storedHeight = 0;
+
+        // Create terrain mesh
+        function createTerrain(data, width, height, elevationRange, realExtent) {
+            // Store for later updates
+            if (data) {
+                storedData = data;
+                storedWidth = width;
+                storedHeight = height;
+                storedElevationRange = elevationRange;
+                storedRealExtent = realExtent;
+            }
+
+            // Remove existing terrain
+            if (terrainMesh) {
+                scene.remove(terrainMesh);
+                terrainMesh.geometry.dispose();
+                terrainMesh.material.dispose();
+            }
+
+            const exaggeration = parseFloat(document.getElementById('exaggeration').value);
+            const colorMode = document.getElementById('colorMode').value;
+
+            // Calculate proper vertical scale based on real-world proportions
+            // geometryWidth is 400 units representing realExtent meters
+            // So 1 unit = realExtent / 400 meters
+            // For true 1:1 scale, 1 meter elevation = 400 / realExtent units
+            const geometryWidth = 400;
+            const verticalScale = geometryWidth / storedRealExtent;
+
+            // Create geometry
+            const geometry = new THREE.PlaneGeometry(geometryWidth, geometryWidth * (storedHeight / storedWidth), storedWidth - 1, storedHeight - 1);
+
+            // Set vertex heights and colors
+            const positions = geometry.attributes.position.array;
+            const colors = new Float32Array(positions.length);
+
+            for (let i = 0; i < storedWidth * storedHeight; i++) {
+                const elevation = storedData[i];
+                const normalizedElevation = (elevation - minElevation) / (maxElevation - minElevation);
+
+                // Set Z (height) with real-world proportional scaling
+                // verticalScale converts meters to geometry units, exaggeration amplifies
+                const vertexIndex = i * 3;
+                if (elevation > -9999) {
+                    positions[vertexIndex + 2] = (elevation - minElevation) * verticalScale * exaggeration;
+                } else {
+                    positions[vertexIndex + 2] = 0;
+                }
+
+                // Set color based on mode
+                const color = getColor(normalizedElevation, colorMode);
+                colors[vertexIndex] = color.r;
+                colors[vertexIndex + 1] = color.g;
+                colors[vertexIndex + 2] = color.b;
+            }
+
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.computeVertexNormals();
+
+            // Create material
+            const material = new THREE.MeshPhongMaterial({
+                vertexColors: true,
+                side: THREE.DoubleSide,
+                wireframe: wireframeMode,
+                flatShading: false
+            });
+
+            // Create mesh
+            terrainMesh = new THREE.Mesh(geometry, material);
+            terrainMesh.rotation.x = -Math.PI / 2;
+            scene.add(terrainMesh);
+
+            // Center camera on terrain
+            const box = new THREE.Box3().setFromObject(terrainMesh);
+            const center = box.getCenter(new THREE.Vector3());
+            controls.target.copy(center);
+        }
+
+        // Get color for elevation
+        function getColor(t, mode) {
+            t = Math.max(0, Math.min(1, t));
+
+            if (mode === 'grayscale') {
+                return { r: t, g: t, b: t };
+            }
+
+            if (mode === 'hillshade') {
+                // Simple hillshade approximation
+                const shade = 0.3 + t * 0.7;
+                return { r: shade, g: shade, b: shade };
+            }
+
+            // Elevation colors (blue -> cyan -> green -> yellow -> red)
+            let r, g, b;
+            if (t < 0.25) {
+                const s = t / 0.25;
+                r = 0; g = s; b = 1;
+            } else if (t < 0.5) {
+                const s = (t - 0.25) / 0.25;
+                r = 0; g = 1; b = 1 - s;
+            } else if (t < 0.75) {
+                const s = (t - 0.5) / 0.25;
+                r = s; g = 1; b = 0;
+            } else {
+                const s = (t - 0.75) / 0.25;
+                r = 1; g = 1 - s; b = 0;
+            }
+
+            return { r, g, b };
+        }
+
+        // Event handlers
+        document.getElementById('exaggeration').addEventListener('input', function(e) {
+            document.getElementById('exaggeration-value').textContent = e.target.value + 'x';
+            if (storedData) {
+                // Rebuild terrain with new exaggeration (no need to reload DEM)
+                createTerrain();
+            }
+        });
+
+        document.getElementById('colorMode').addEventListener('change', function() {
+            if (storedData) {
+                createTerrain();
+            }
+        });
+
+        document.getElementById('lightAngle').addEventListener('input', function(e) {
+            document.getElementById('lightAngle-value').textContent = e.target.value + '°';
+            const angle = parseFloat(e.target.value) * Math.PI / 180;
+            const light = scene.children.find(c => c instanceof THREE.DirectionalLight);
+            if (light) {
+                light.position.set(Math.cos(angle) * 200, 200, Math.sin(angle) * 200);
+            }
+        });
+
+        document.getElementById('resetCamera').addEventListener('click', function() {
+            camera.position.set(0, 300, 400);
+            controls.target.set(0, 0, 0);
+        });
+
+        document.getElementById('toggleWireframe').addEventListener('click', function() {
+            wireframeMode = !wireframeMode;
+            if (terrainMesh) {
+                terrainMesh.material.wireframe = wireframeMode;
+            }
+            this.textContent = wireframeMode ? 'Solid' : 'Wireframe';
+        });
+
+        // Initialize
+        initScene();
+        loadDEM(demUrl);
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json"
+  ],
+  "id": "dem",
+  "languages": [{"code": "ja", "name": "日本語"}, {"code": "en", "name": "English"}],
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [[[138.71568239130661, 35.36282776994987], [138.7465559797546, 35.36282776994987], [138.7465559797546, 35.383211111989574], [138.71568239130661, 35.383211111989574], [138.71568239130661, 35.36282776994987]]]
+  },
+  "bbox": [138.71568239130661, 35.36282776994987, 138.7465559797546, 35.383211111989574],
+  "properties": {
+    "title": "デジタル標高モデル（公式）",
+    "description": "山梨県2024年度LiDAR測量による公式DEM。52タイルを単一のCloud Optimized GeoTIFF (COG)に統合。解像度0.5m。",
+    "datetime": "2025-12-18T00:59:44Z",
+    "proj:epsg": 4326,
+    "proj:bbox": [138.71568239130661, 35.36282776994987, 138.7465559797546, 35.383211111989574],
+    "raster:bands": [{"data_type": "float32", "nodata": -9999, "unit": "meter", "description": "海抜標高"}],
+    "source_tile_count": 52,
+    "source_resolution": "0.5m",
+    "source_crs": "EPSG:6676"
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "./dem.json",
+      "type": "application/geo+json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "./dem-en.json",
+      "type": "application/geo+json",
+      "hreflang": "en",
+      "title": "English version"
+    },
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "COPC 統合カタログ",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "富士山周辺",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "富士山周辺",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "related",
+      "href": "https://stac.uixai.org/potree/selector.html?collection=fujisan&type=raster",
+      "type": "text/html",
+      "title": "範囲選択ツール"
+    }
+  ],
+  "assets": {
+    "dem": {
+      "href": "https://stac.uixai.org/data/fujisan_dem_2024_official.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "デジタル標高モデル (WGS84)",
+      "description": "EPSG:4326形式のCOG。Web表示・一般用途向け。解像度0.5m、Float32。",
+      "file:size": 40315559,
+      "proj:epsg": 4326,
+      "raster:bands": [{"data_type": "float32", "nodata": -9999, "unit": "meter", "description": "海抜標高"}],
+      "roles": ["data", "elevation"]
+    },
+    "dem_jgd": {
+      "href": "https://stac.uixai.org/data/fujisan_dem_2024_official_jgd.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "デジタル標高モデル (JGD2011)",
+      "description": "EPSG:6676形式のCOG。専門測量用（オリジナル座標系）。解像度0.5m、Float32。",
+      "file:size": 42223534,
+      "proj:epsg": 6676,
+      "raster:bands": [{"data_type": "float32", "nodata": -9999, "unit": "meter", "description": "海抜標高"}],
+      "roles": ["data", "elevation"]
+    },
+    "visual": {
+      "href": "https://stac.uixai.org/data/fujisan_dem_visual.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "DEM可視化（RGBA）",
+      "description": "陰影起伏と段彩による可視化プレビュー",
+      "file:size": 5404205,
+      "roles": ["visual", "overview"]
+    }
+  },
+  "collection": "fujisan"
+}

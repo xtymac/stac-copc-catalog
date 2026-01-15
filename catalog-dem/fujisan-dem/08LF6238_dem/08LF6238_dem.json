@@ -1,0 +1,108 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/processing/v1.2.0/schema.json"
+  ],
+  "id": "08LF6238_dem",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          139.06474768205567,
+          35.55518703758455
+        ],
+        [
+          139.06918985105025,
+          35.55518703758455
+        ],
+        [
+          139.06918985105025,
+          35.55792088876131
+        ],
+        [
+          139.06474768205567,
+          35.55792088876131
+        ],
+        [
+          139.06474768205567,
+          35.55518703758455
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    139.06474768205567,
+    35.55518703758455,
+    139.06918985105025,
+    35.55792088876131
+  ],
+  "properties": {
+    "title": "08LF6238_dem - Digital Elevation Model",
+    "description": "Surface elevation model using maximum Z values from point cloud. Derived from 08LF6238.copc.laz",
+    "dem_type": "dem",
+    "resolution": 1.0,
+    "source_pointcloud": "08LF6238.copc.laz",
+    "proj:epsg": 6676,
+    "proj:shape": [
+      301,
+      401
+    ],
+    "processing:software": {
+      "PDAL": "writers.gdal",
+      "GDAL": "COG driver"
+    },
+    "datetime": "2025-12-15T11:38:00.163388Z"
+  },
+  "links": [
+    {
+      "rel": "derived_from",
+      "href": "../pointcloud/08LF6238.json",
+      "type": "application/geo+json",
+      "title": "Source point cloud: 08LF6238.copc.laz"
+    },
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "Fujisan DEM Products STAC Catalog"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "Fujisan DEM Products"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "Fujisan DEM Products"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/fujisan-dem/08LF6238_dem.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Digital Elevation Model",
+      "description": "Surface elevation model using maximum Z values from point cloud",
+      "raster:bands": [
+        {
+          "nodata": -9999.0,
+          "data_type": "float32",
+          "unit": "meter",
+          "spatial_resolution": 1.0
+        }
+      ],
+      "file:size": 218448,
+      "roles": [
+        "data"
+      ]
+    }
+  },
+  "collection": "fujisan-dem"
+}

@@ -1,0 +1,76 @@
+{
+  "type": "Collection",
+  "id": "fujisan",
+  "stac_version": "1.1.0",
+  "description": "Single merged LiDAR point cloud in COPC format for cloud-native access",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "\u5bcc\u58eb\u5c71\u70b9\u4e91\u6570\u636e\u96c6 (Unified)"
+    },
+    {
+      "rel": "item",
+      "href": "./unified-pointcloud/unified-pointcloud.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "\u5bcc\u58eb\u5c71\u70b9\u4e91\u6570\u636e\u96c6 (Unified)"
+    }
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "summaries": {
+    "pc:count": {
+      "minimum": 209251895,
+      "maximum": 209251895
+    },
+    "pc:type": [
+      "lidar"
+    ],
+    "pc:encoding": [
+      "application/vnd.laszip+copc"
+    ]
+  },
+  "title": "Unified Point Cloud - fujisan",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          19600.0,
+          -70667.82,
+          22399.99,
+          -68400.01
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2025-12-10T08:50:13.158238Z",
+          null
+        ]
+      ]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "Japanese national mapping and 3D city model project",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "type": "Collection",
+  "id": "kasugai-station",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "languages": [{"code": "ja", "name": "日本語"}, {"code": "en", "name": "English"}],
+  "title": "春日居町駅周辺",
+  "description": "山梨県春日居町駅周辺のLiDAR点群データ。高解像度3D地形・都市構造データをCOPC形式で提供。",
+  "links": [
+    {
+      "rel": "self",
+      "href": "./collection.json",
+      "type": "application/json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "./collection-en.json",
+      "type": "application/json",
+      "hreflang": "en",
+      "title": "English version"
+    },
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "COPC 統合カタログ",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "COPC 統合カタログ",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "item",
+      "href": "./kasugai-station/kasugai-station.json",
+      "type": "application/geo+json",
+      "title": "春日居町駅周辺 LiDAR 点群",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "item",
+      "href": "./kasugai-dem/kasugai-dem.json",
+      "type": "application/geo+json",
+      "title": "春日居町駅周辺 DEM (公式 山梨2024)",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "preview",
+      "href": "https://stac.uixai.org/potree/index.html?files=https://stac.uixai.org/data/kasugai-station.copc.laz",
+      "type": "text/html",
+      "title": "Potree 3Dビューア"
+    }
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "summaries": {
+    "pc:count": {"minimum": 148364043, "maximum": 148364043},
+    "pc:type": ["lidar"],
+    "pc:encoding": ["application/vnd.laszip+copc"]
+  },
+  "extent": {
+    "spatial": {
+      "bbox": [[138.628119, 35.659222, 138.659076, 35.675410]]
+    },
+    "temporal": {
+      "interval": [["2025-12-11T00:00:00Z", null]]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "国土交通省による3D都市モデルプロジェクト",
+      "roles": ["producer", "licensor"],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

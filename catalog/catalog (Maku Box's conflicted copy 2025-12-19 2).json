@@ -1,0 +1,43 @@
+{
+  "type": "Catalog",
+  "id": "stac-copc-catalog",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "title": "STAC データカタログ",
+  "description": "山梨県の高精度LiDAR点群データ（COPC形式）とDEM（COG形式）を提供するSTACカタログ。",
+  "links": [
+    {
+      "rel": "root",
+      "href": "./catalog.json",
+      "type": "application/json",
+      "title": "STAC データカタログ"
+    },
+    {
+      "rel": "self",
+      "href": "https://stac.uixai.org/catalog.json",
+      "type": "application/json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://stac.uixai.org/catalog-en.json",
+      "type": "application/json",
+      "hreflang": "en",
+      "title": "English version"
+    },
+    {
+      "rel": "child",
+      "href": "./kasugai-station/collection.json",
+      "type": "application/json",
+      "title": "春日居町周辺"
+    },
+    {
+      "rel": "child",
+      "href": "./fujisan/collection.json",
+      "type": "application/json",
+      "title": "富士山周辺"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/processing/v1.2.0/schema.json"
+  ],
+  "id": "08LF6341_dem",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          137.94760752364945,
+          36.47099451419353
+        ],
+        [
+          137.95099180495455,
+          36.47099451419353
+        ],
+        [
+          137.95099180495455,
+          36.4746238685984
+        ],
+        [
+          137.94760752364945,
+          36.4746238685984
+        ],
+        [
+          137.94760752364945,
+          36.47099451419353
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    137.94760752364945,
+    36.47099451419353,
+    137.95099180495455,
+    36.4746238685984
+  ],
+  "properties": {
+    "title": "08LF6341_dem - Digital Elevation Model",
+    "description": "Surface elevation model using maximum Z values from point cloud. Derived from 08LF6341.copc.laz",
+    "dem_type": "dem",
+    "resolution": 1.0,
+    "source_pointcloud": "08LF6341.copc.laz",
+    "proj:epsg": 6676,
+    "proj:shape": [
+      401,
+      301
+    ],
+    "processing:software": {
+      "PDAL": "writers.gdal",
+      "GDAL": "COG driver"
+    },
+    "datetime": "2025-12-15T11:59:49.451342Z"
+  },
+  "links": [
+    {
+      "rel": "derived_from",
+      "href": "../pointcloud/08LF6341.json",
+      "type": "application/geo+json",
+      "title": "Source point cloud: 08LF6341.copc.laz"
+    },
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "DEM Products STAC Catalog"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "DEM Products"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "DEM Products"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/dem-products/08LF6341_dem.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Digital Elevation Model",
+      "description": "Surface elevation model using maximum Z values from point cloud",
+      "raster:bands": [
+        {
+          "nodata": -9999.0,
+          "data_type": "float32",
+          "unit": "meter",
+          "spatial_resolution": 1.0
+        }
+      ],
+      "file:size": 223426,
+      "roles": [
+        "data"
+      ]
+    }
+  },
+  "collection": "dem-products"
+}

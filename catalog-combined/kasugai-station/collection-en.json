@@ -1,0 +1,86 @@
+{
+  "type": "Collection",
+  "id": "kasugai-station",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "languages": [{"code": "ja", "name": "日本語"}, {"code": "en", "name": "English"}],
+  "title": "Kasugai-cho Station Area",
+  "description": "LiDAR point cloud data covering the Kasugai-cho Station area in Yamanashi Prefecture, Japan. High-resolution 3D terrain and urban structure data in COPC format.",
+  "links": [
+    {
+      "rel": "self",
+      "href": "./collection-en.json",
+      "type": "application/json",
+      "hreflang": "en"
+    },
+    {
+      "rel": "alternate",
+      "href": "./collection.json",
+      "type": "application/json",
+      "hreflang": "ja",
+      "title": "日本語版"
+    },
+    {
+      "rel": "root",
+      "href": "../catalog-en.json",
+      "type": "application/json",
+      "title": "COPC Unified Catalog",
+      "hreflang": "en"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog-en.json",
+      "type": "application/json",
+      "title": "COPC Unified Catalog",
+      "hreflang": "en"
+    },
+    {
+      "rel": "item",
+      "href": "./kasugai-station/kasugai-station-en.json",
+      "type": "application/geo+json",
+      "title": "Kasugai-cho Station Area LiDAR Point Cloud",
+      "hreflang": "en"
+    },
+    {
+      "rel": "item",
+      "href": "./kasugai-dem/kasugai-dem-en.json",
+      "type": "application/geo+json",
+      "title": "Kasugai-cho Station Area DEM (Official Yamanashi 2024)",
+      "hreflang": "en"
+    },
+    {
+      "rel": "preview",
+      "href": "https://stac.uixai.org/potree/index.html?files=https://stac.uixai.org/data/kasugai-station.copc.laz",
+      "type": "text/html",
+      "title": "Potree 3D Viewer"
+    }
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "summaries": {
+    "pc:count": {"minimum": 148364043, "maximum": 148364043},
+    "pc:type": ["lidar"],
+    "pc:encoding": ["application/vnd.laszip+copc"]
+  },
+  "extent": {
+    "spatial": {
+      "bbox": [[138.628119, 35.659222, 138.659076, 35.675410]]
+    },
+    "temporal": {
+      "interval": [["2025-12-11T00:00:00Z", null]]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "Japanese national mapping and 3D city model project",
+      "roles": ["producer", "licensor"],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

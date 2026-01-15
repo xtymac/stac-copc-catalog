@@ -1,0 +1,80 @@
+{
+  "type": "Collection",
+  "id": "kasugai-station",
+  "stac_version": "1.1.0",
+  "description": "LiDAR point cloud data in COPC format",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "\u6625\u65e5\u5c45\u753a\u99c5\u5468\u8fba (Kasugai Station Area)"
+    },
+    {
+      "rel": "item",
+      "href": "./\u6625\u65e5\u5c45\u753a\u99c5 (42 LAS files merged)/\u6625\u65e5\u5c45\u753a\u99c5 (42 LAS files merged).json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "\u6625\u65e5\u5c45\u753a\u99c5\u5468\u8fba (Kasugai Station Area)"
+    }
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "proj:epsg": 6676,
+  "summaries": {
+    "pc:count": {
+      "minimum": 148364043,
+      "maximum": 148364043
+    },
+    "pc:type": [
+      "lidar"
+    ],
+    "pc:encoding": [
+      "application/vnd.laszip+copc"
+    ],
+    "proj:epsg": [
+      6676
+    ]
+  },
+  "title": "Point Cloud Collection - kasugai-station",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          138.6281188012905,
+          35.659221725902235,
+          138.6590760059148,
+          35.67540943322301
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2025-12-09T11:14:15.654246Z",
+          null
+        ]
+      ]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "PLATEAU / GSI Japan",
+      "description": "Japanese national mapping and 3D city model project",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}

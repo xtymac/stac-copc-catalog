@@ -1,0 +1,21 @@
+{
+  "type": "Catalog",
+  "id": "dem-catalog",
+  "stac_version": "1.1.0",
+  "description": "STAC catalog containing Digital Elevation Models derived from LiDAR point clouds",
+  "links": [
+    {
+      "rel": "root",
+      "href": "./catalog.json",
+      "type": "application/json",
+      "title": "DEM Products STAC Catalog"
+    },
+    {
+      "rel": "child",
+      "href": "./dem-products/collection.json",
+      "type": "application/json",
+      "title": "DEM Products"
+    }
+  ],
+  "title": "DEM Products STAC Catalog"
+}

@@ -1,0 +1,103 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json"
+  ],
+  "id": "\u6625\u65e5\u5c45\u753a\u99c5 (42 LAS files merged)",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          138.6281188012905,
+          35.659221725902235
+        ],
+        [
+          138.6590760059148,
+          35.659221725902235
+        ],
+        [
+          138.6590760059148,
+          35.67540943322301
+        ],
+        [
+          138.6281188012905,
+          35.67540943322301
+        ],
+        [
+          138.6281188012905,
+          35.659221725902235
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    138.6281188012905,
+    35.659221725902235,
+    138.6590760059148,
+    35.67540943322301
+  ],
+  "properties": {
+    "title": "\u6625\u65e5\u5c45\u753a\u99c5 (42 LAS files merged)",
+    "description": "COPC point cloud from \u6625\u65e5\u5c45\u753a\u99c5 (42 LAS files merged)",
+    "pc:count": 148364043,
+    "pc:type": "lidar",
+    "pc:encoding": "application/vnd.laszip+copc",
+    "pc:density": 0,
+    "proj:epsg": 6676,
+    "proj:bbox": [
+      -37800,
+      11600,
+      266.62,
+      -36000.01,
+      14399.99,
+      691.53
+    ],
+    "datetime": "2025-12-09T11:14:15.655152Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "\u6625\u65e5\u5c45\u753a\u99c5\u5468\u8fba (Kasugai Station Area)"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "Point Cloud Collection - kasugai-station"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "Point Cloud Collection - kasugai-station"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://stac.uixai.org/data/kasugai_station.copc.laz",
+      "type": "application/vnd.laszip+copc",
+      "title": "COPC Point Cloud Data",
+      "description": "Cloud Optimized Point Cloud (COPC) format",
+      "file:size": 1318981975,
+      "roles": [
+        "data"
+      ]
+    },
+    "metadata": {
+      "href": "https://stac.uixai.org/data/kasugai_station.metadata.json",
+      "type": "application/json",
+      "title": "Processing Metadata",
+      "description": "PDAL processing metadata and statistics",
+      "roles": [
+        "metadata"
+      ]
+    }
+  },
+  "collection": "kasugai-station"
+}

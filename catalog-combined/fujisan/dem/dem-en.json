@@ -1,0 +1,101 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json"
+  ],
+  "id": "dem",
+  "languages": [{"code": "ja", "name": "日本語"}, {"code": "en", "name": "English"}],
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [[[138.71568239130661, 35.36282776994987], [138.7465559797546, 35.36282776994987], [138.7465559797546, 35.383211111989574], [138.71568239130661, 35.383211111989574], [138.71568239130661, 35.36282776994987]]]
+  },
+  "bbox": [138.71568239130661, 35.36282776994987, 138.7465559797546, 35.383211111989574],
+  "properties": {
+    "title": "Digital Elevation Model (Official)",
+    "description": "Official DEM from Yamanashi Prefecture 2024 LiDAR survey. 52 tiles merged into a single Cloud Optimized GeoTIFF (COG) with 0.5m resolution.",
+    "datetime": "2025-12-18T00:59:44Z",
+    "proj:epsg": 4326,
+    "proj:bbox": [138.71568239130661, 35.36282776994987, 138.7465559797546, 35.383211111989574],
+    "raster:bands": [{"data_type": "float32", "nodata": -9999, "unit": "meter", "description": "Elevation above sea level"}],
+    "source_tile_count": 52,
+    "source_resolution": "0.5m",
+    "source_crs": "EPSG:6676"
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "./dem-en.json",
+      "type": "application/geo+json",
+      "hreflang": "en"
+    },
+    {
+      "rel": "alternate",
+      "href": "./dem.json",
+      "type": "application/geo+json",
+      "hreflang": "ja",
+      "title": "日本語版"
+    },
+    {
+      "rel": "root",
+      "href": "../../catalog-en.json",
+      "type": "application/json",
+      "title": "COPC Unified Catalog",
+      "hreflang": "en"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection-en.json",
+      "type": "application/json",
+      "title": "Mt. Fuji Area",
+      "hreflang": "en"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection-en.json",
+      "type": "application/json",
+      "title": "Mt. Fuji Area",
+      "hreflang": "en"
+    },
+    {
+      "rel": "related",
+      "href": "https://stac.uixai.org/potree/selector.html?collection=fujisan&type=raster",
+      "type": "text/html",
+      "title": "Area Selector Tool"
+    }
+  ],
+  "assets": {
+    "dem": {
+      "href": "https://stac.uixai.org/data/fujisan_dem_2024_official.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Digital Elevation Model (WGS84)",
+      "description": "COG in EPSG:4326 for web viewing and general use. 0.5m resolution, Float32.",
+      "file:size": 40315559,
+      "proj:epsg": 4326,
+      "raster:bands": [{"data_type": "float32", "nodata": -9999, "unit": "meter", "description": "Elevation above sea level"}],
+      "roles": ["data", "elevation"]
+    },
+    "dem_jgd": {
+      "href": "https://stac.uixai.org/data/fujisan_dem_2024_official_jgd.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Digital Elevation Model (JGD2011)",
+      "description": "COG in EPSG:6676 for professional surveying (original projection). 0.5m resolution, Float32.",
+      "file:size": 42223534,
+      "proj:epsg": 6676,
+      "raster:bands": [{"data_type": "float32", "nodata": -9999, "unit": "meter", "description": "Elevation above sea level"}],
+      "roles": ["data", "elevation"]
+    },
+    "visual": {
+      "href": "https://stac.uixai.org/data/fujisan_dem_visual.cog.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "DEM Visualization (RGBA)",
+      "description": "Hillshade and color-relief visualization for preview",
+      "file:size": 5404205,
+      "roles": ["visual", "overview"]
+    }
+  },
+  "collection": "fujisan"
+}

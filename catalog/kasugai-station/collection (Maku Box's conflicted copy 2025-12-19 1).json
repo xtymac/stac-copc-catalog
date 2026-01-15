@@ -1,0 +1,74 @@
+{
+  "type": "Collection",
+  "id": "kasugai-station",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/language/v1.0.0/schema.json"
+  ],
+  "title": "春日居町周辺",
+  "description": "山梨県笛吹市春日居町駅周辺の高精度LiDAR点群データ。42個のLASファイルを統合し、約1.5億点のCOPC形式で提供。",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "STAC データカタログ"
+    },
+    {
+      "rel": "self",
+      "href": "https://stac.uixai.org/kasugai-station/collection.json",
+      "type": "application/json",
+      "hreflang": "ja"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://stac.uixai.org/kasugai-station/collection-en.json",
+      "type": "application/json",
+      "hreflang": "en",
+      "title": "English version"
+    },
+    {
+      "rel": "item",
+      "href": "./春日居町駅 (42 LAS files merged)/春日居町駅 (42 LAS files merged).json",
+      "type": "application/geo+json",
+      "title": "統合COPC点群"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "STAC データカタログ"
+    }
+  ],
+  "pc:type": "lidar",
+  "pc:encoding": "application/vnd.laszip+copc",
+  "proj:epsg": 6676,
+  "summaries": {
+    "pc:count": {
+      "minimum": 148364043,
+      "maximum": 148364043
+    },
+    "pc:type": ["lidar"],
+    "pc:encoding": ["application/vnd.laszip+copc"],
+    "proj:epsg": [6676]
+  },
+  "extent": {
+    "spatial": {
+      "bbox": [[138.6281188012905, 35.659221725902235, 138.6590760059148, 35.67540943322301]]
+    },
+    "temporal": {
+      "interval": [["2025-12-10T03:40:42.806003Z", null]]
+    }
+  },
+  "license": "proprietary",
+  "providers": [
+    {
+      "name": "山梨県 / PLATEAU",
+      "description": "山梨県と国土交通省PLATEAUプロジェクトによる3D都市モデルデータ",
+      "roles": ["producer", "licensor"],
+      "url": "https://www.mlit.go.jp/plateau/"
+    }
+  ]
+}
