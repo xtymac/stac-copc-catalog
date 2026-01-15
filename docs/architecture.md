@@ -143,11 +143,26 @@ Study STAC/
 3. 生成目录
    $ python scripts/02-generate-stac.py
 
-4. 上传到云端
+4. 提交代码到 GitHub（可选）
+   $ git add .
+   $ git commit -m "Add new point cloud data"
+   $ git push
+
+5. 上传到云端
    $ ./scripts/03-deploy-aws.sh --update
 
-5. 完成！访问网址查看
+6. 完成！访问网址查看
    https://stac.uixai.org/viewer/
+```
+
+### 代码同步流程：
+
+```
+本地修改 → git commit → git push → GitHub
+                                      ↓
+                        ./scripts/03-deploy-aws.sh
+                                      ↓
+                                 AWS S3/CloudFront
 ```
 
 ---
@@ -160,6 +175,7 @@ Study STAC/
 | https://stac.uixai.org/browser/ | STAC 数据浏览器 |
 | https://stac.uixai.org/viewer/ | Potree 3D 查看器 |
 | https://stac.uixai.org/catalog.json | 原始目录文件（JSON） |
+| https://github.com/xtymac/stac-copc-catalog | GitHub 源代码仓库 |
 
 ---
 
@@ -267,3 +283,21 @@ A: 所有访问都通过 HTTPS 加密，S3 存储桶设为私有，只能通过 
 3. **标准格式** - STAC + COPC 国际通用
 4. **成本低** - 每月 $10-20
 5. **可扩展** - 轻松添加新数据
+6. **版本控制** - GitHub 备份和协作
+
+---
+
+## 源代码仓库
+
+**GitHub**: https://github.com/xtymac/stac-copc-catalog
+
+### 克隆项目
+
+```bash
+git clone https://github.com/xtymac/stac-copc-catalog.git
+cd stac-copc-catalog
+```
+
+### 许可证
+
+MIT License - 开源免费使用
